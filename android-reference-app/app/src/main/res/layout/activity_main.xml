@@ -19,28 +19,12 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/product"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/product"
-        app:layout_constraintLeft_toLeftOf="@id/titleTextView"
-        app:layout_constraintBaseline_toBaselineOf="@id/productSpinner" />
-
-    <Spinner
-        android:id="@+id/productSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/titleTextView"
-        app:layout_constraintLeft_toRightOf="@id/product"
-        app:layout_constraintRight_toRightOf="@id/titleTextView"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/productSpinner"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_layout" />
 
