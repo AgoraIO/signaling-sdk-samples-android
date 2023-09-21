@@ -1,10 +1,9 @@
-package io.agora.android_reference_app
+package io.agora.signaling_reference_app
 
 //import io.agora.agora_manager.AgoraManager
 //import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 
 import androidx.appcompat.app.AppCompatActivity
-import android.view.SurfaceView
 import android.os.Bundle
 import android.view.View
 import android.widget.*

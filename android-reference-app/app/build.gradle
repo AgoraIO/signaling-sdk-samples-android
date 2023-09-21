@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'io.agora.android_reference_app'
+    namespace 'io.agora.signaling_reference_app'
     compileSdk 33
 
     defaultConfig {
-        applicationId "io.agora.android_reference_app"
+        applicationId "io.agora.signaling_reference_app"
         minSdk 24
         targetSdk 33
         versionCode 1

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android reference app</string>
+    <string name="app_name">Signaling reference app</string>
     <string name="main_title">Agora Signaling SDK Samples</string>
     <string name="leave">Leave</string>
     <string name="join">Join</string>

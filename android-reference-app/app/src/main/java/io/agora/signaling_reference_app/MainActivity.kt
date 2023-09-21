@@ -1,4 +1,4 @@
-package io.agora.android_reference_app
+package io.agora.signaling_reference_app
 
 //import io.agora.agora_manager.AgoraManager
 
@@ -26,10 +26,14 @@ class MainActivity : AppCompatActivity() {
             ListItem("SDK quickstart", ListItem.ExampleId.SDK_QUICKSTART),
             ListItem("Secure authentication with tokens", ListItem.ExampleId.AUTHENTICATION_WORKFLOW),
 
-            ListItem("DEVELOP", ListItem.ExampleId.HEADER),
-            ListItem("Call quality best practice", ListItem.ExampleId.CALL_QUALITY),
-            ListItem("Stream media to a channel", ListItem.ExampleId.PLAY_MEDIA),
-            ListItem("Screen share, volume control and mute", ListItem.ExampleId.PRODUCT_WORKFLOW)
+            ListItem("CORE FUNCTIONALITY", ListItem.ExampleId.HEADER),
+            ListItem("Stream channels", ListItem.ExampleId.STREAM_CHANNELS),
+            ListItem("Store channel and user data", ListItem.ExampleId.STORE_DATA),
+            ListItem("Connect through restricted networks with cloud proxy", ListItem.ExampleId.CLOUD_PROXY),
+            ListItem("Data encryption", ListItem.ExampleId.DATA_ENCRYPTION),
+
+            ListItem("INTEGRATE FEATURES", ListItem.ExampleId.HEADER),
+            ListItem("Geofencing", ListItem.ExampleId.GEOFENCING),
         )
         // Set up the adapter with the list of items and click listener
         val adapter = ItemListAdapter(itemList, object : ItemListAdapter.ItemClickListener {

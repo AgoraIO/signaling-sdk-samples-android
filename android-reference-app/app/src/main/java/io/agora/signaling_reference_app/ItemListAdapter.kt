@@ -1,4 +1,4 @@
-package io.agora.android_reference_app
+package io.agora.signaling_reference_app
 
 import android.view.LayoutInflater
 import android.view.View

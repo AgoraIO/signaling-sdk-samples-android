@@ -1,4 +1,4 @@
-package io.agora.android_reference_app
+package io.agora.signaling_reference_app
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("io.agora.android_reference_app", appContext.packageName)
+        assertEquals("io.agora.signaling_reference_app", appContext.packageName)
     }
 }
