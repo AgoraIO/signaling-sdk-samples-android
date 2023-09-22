@@ -1,6 +1,6 @@
 package io.agora.signaling_reference_app
 
-//import io.agora.agora_manager.AgoraManager
+import io.agora.signaling_manager.SignalingManager
 //import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 
 import android.graphics.Color
@@ -9,67 +9,43 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-
 
 open class BasicImplementationActivity : AppCompatActivity() {
-    //protected lateinit var agoraManager: AgoraManager
+    protected lateinit var signalingManager: SignalingManager
     protected lateinit var btnJoinLeave: Button
-    protected  lateinit var  bottom_sheet_view: LinearLayout
 
-
+    
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
-        get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
+        get() = R.layout.base_layout // Default layout resource ID for base activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutResourceId)
 
-        // Set up access to the UI elements
-//        btnJoinLeave = findViewById(R.id.btn_join_leave) // The join/leave button
-        bottom_sheet_view = findViewById(R.id.bottom_sheet_view)
-
-        // Set a click listener on the button to show the bottom sheet
-        val bottomSheetButton: Button = findViewById(R.id.bottom_sheet_button)
-
-        // Associate the BottomSheetBehavior with the bottom sheet view
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_view)
-
-        bottomSheetButton.setOnClickListener {
-            // Set the state of the bottom sheet (e.g., STATE_COLLAPSED, STATE_EXPANDED)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
         // Create an instance of the AgoraManager class
-        initializeAgoraManager()
+        initializeSignalingManager()
     }
 
 
-    private fun showBottomSheet() {
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_view)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    protected open fun initializeAgoraManager() {
-      //  agoraManager = AgoraManager(this)
+    protected open fun initializeSignalingManager() {
+        signalingManager = SignalingManager(this)
 
         // Set up a listener for updating the UI
-      //  agoraManager.setListener(agoraManagerListener)
+        // agoraManager.setListener(agoraManagerListener)
     }
 
     protected open fun join() {
         // Join a channel
-//        agoraManager.joinChannel()
+        // agoraManager.joinChannel()
     }
 
 
     protected open fun leave() {
         // Leave the channel
-  //      agoraManager.leaveChannel()
+        // agoraManager.leaveChannel()
         // Update the UI
         btnJoinLeave.text = getString(R.string.join)
-
     }
 
     fun joinLeave(view: View) {
