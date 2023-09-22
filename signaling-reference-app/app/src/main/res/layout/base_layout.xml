@@ -15,7 +15,7 @@
         android:text="@string/join" />
 
     <EditText
-        android:id="@+id/et_to_chat_name"
+        android:id="@+id/editChannelName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/btn_join_leave"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btn_send_message"
-        android:layout_below="@id/et_to_chat_name"
+        android:layout_below="@id/editChannelName"
         android:background="#ECE5DD">
 
         <LinearLayout

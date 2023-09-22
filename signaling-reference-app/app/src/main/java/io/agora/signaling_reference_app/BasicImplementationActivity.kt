@@ -9,15 +9,14 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 open class BasicImplementationActivity : AppCompatActivity() {
     //protected lateinit var agoraManager: AgoraManager
     protected lateinit var btnJoinLeave: Button
-    protected lateinit var mainFrame: FrameLayout
-    protected lateinit var containerLayout: LinearLayout
-    protected lateinit var radioGroup: RadioGroup
-    protected lateinit var videoFrameMap: MutableMap<Int, FrameLayout?>
+    protected  lateinit var  bottom_sheet_view: LinearLayout
+
 
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
@@ -28,10 +27,28 @@ open class BasicImplementationActivity : AppCompatActivity() {
         setContentView(layoutResourceId)
 
         // Set up access to the UI elements
-        btnJoinLeave = findViewById(R.id.btn_join_leave) // The join/leave button
+//        btnJoinLeave = findViewById(R.id.btn_join_leave) // The join/leave button
+        bottom_sheet_view = findViewById(R.id.bottom_sheet_view)
+
+        // Set a click listener on the button to show the bottom sheet
+        val bottomSheetButton: Button = findViewById(R.id.bottom_sheet_button)
+
+        // Associate the BottomSheetBehavior with the bottom sheet view
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_view)
+
+        bottomSheetButton.setOnClickListener {
+            // Set the state of the bottom sheet (e.g., STATE_COLLAPSED, STATE_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         // Create an instance of the AgoraManager class
         initializeAgoraManager()
+    }
+
+
+    private fun showBottomSheet() {
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_view)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     protected open fun initializeAgoraManager() {
@@ -52,12 +69,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
   //      agoraManager.leaveChannel()
         // Update the UI
         btnJoinLeave.text = getString(R.string.join)
-        if (radioGroup.visibility != View.GONE) radioGroup.visibility = View.VISIBLE
 
-        // Clear the video containers
-        containerLayout.removeAllViews()
-        mainFrame.removeAllViews()
-        videoFrameMap.clear()
     }
 
     fun joinLeave(view: View) {
