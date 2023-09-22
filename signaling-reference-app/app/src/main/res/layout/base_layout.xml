@@ -1,39 +1,67 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linear_layout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:layout_margin="0dp"
+    android:background="#ECE5DD">
 
-    <FrameLayout
-        android:id="@+id/main_video_container"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:background="@drawable/border_drawable" />
-
-    <HorizontalScrollView
-        android:id="@+id/smallVideosView"
-        android:layout_width="match_parent"
+<Button
+        android:id="@+id/btn_join_leave"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/border_drawable">
-
-        <LinearLayout
-            android:id="@+id/containerLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:paddingVertical="3dp"
-            android:orientation="horizontal">
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <Button
-        android:id="@+id/btnJoinLeave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
         android:onClick="joinLeave"
         android:text="@string/join" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/et_to_chat_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/btn_join_leave"
+        android:layout_alignTop="@id/btn_join_leave"
+        android:layout_toStartOf="@id/btn_join_leave"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="Enter recepient username" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_send_message"
+        android:layout_below="@id/et_to_chat_name"
+        android:background="#ECE5DD">
+
+        <LinearLayout
+            android:id="@+id/messageList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/et_msg_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/btn_send_message"
+        android:layout_alignBottom="@id/btn_send_message"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/message" />
+
+    <Button
+        android:id="@+id/btn_send_message"
+        android:layout_width="50dp"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="sendMessage"
+        android:text=">>" />
+
+</RelativeLayout>
 
