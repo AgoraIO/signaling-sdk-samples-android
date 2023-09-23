@@ -35,15 +35,17 @@ open class BasicImplementationActivity : AppCompatActivity() {
         // agoraManager.setListener(agoraManagerListener)
     }
 
+
+
     protected open fun join() {
         // Join a channel
-        signalingManager.joinChannel()
+        signalingManager.login()
     }
 
 
     protected open fun leave() {
         // Leave the channel
-        signalingManager.leaveChannel()
+        signalingManager.logout()
         // Update the UI
         btnJoinLeave.text = getString(R.string.join)
     }

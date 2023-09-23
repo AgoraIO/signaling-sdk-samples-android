@@ -121,24 +121,12 @@ open class SignalingManager(context: Context) {
         return true
     }
 
-    class loginResultCallback : ResultCallback<String?> {
-        override fun onSuccess(responseInfo: String?) {
-            TODO("Not yet implemented")
-        }
-
-        override fun onFailure(errorInfo: ErrorInfo?) {
-            TODO("Not yet implemented")
-        }
-    }
-
-    fun joinChannel(): Int {
+    fun login(): Int {
         if (signalingEngine ==  null ) {
             setupSignalingEngine()
         }
         // Use channelName and token from the config file
         val token = config!!.optString("token")
-        //return joinChannel(channelName, token)
-        val resultCallback:  ResultCallback<Void>
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -146,10 +134,10 @@ open class SignalingManager(context: Context) {
             }
 
             override fun onSuccess(responseInfo: Void?) {
+                isJoined = true
                 sendMessage("login success")
             }
         })
-
         return 0
     }
 
@@ -163,16 +151,22 @@ open class SignalingManager(context: Context) {
         return 0
     }
 
-    fun leaveChannel() {
+    fun logout() {
         if (!isJoined) {
             sendMessage("Join a channel first")
         } else {
             // To leave a channel, call the `leaveChannel` method
-            //agoraEngine!!.leaveChannel()
-            sendMessage("You left the channel")
+            signalingEngine?.logout(object: ResultCallback<Void?> {
+                override fun onFailure(errorInfo: ErrorInfo?) {
+                    sendMessage("logout failed:\n"+ errorInfo.toString())
+                }
 
-            // Set the `joined` status to false
-            isJoined = false
+                override fun onSuccess(responseInfo: Void?) {
+                    isJoined = false
+                    sendMessage("logout success")
+                }
+            })
+
             // Destroy the engine instance
             destroySignalingEngine()
         }
@@ -205,7 +199,7 @@ open class SignalingManager(context: Context) {
 
     interface SignalingManagerListener {
         fun onMessageReceived(message: String?)
-        fun onSignalingEvent(eventType: String, eventArgs: SurfaceView?)
+        fun onSignalingEvent(eventType: String, eventArgs: Map<String, Any>)
     }
 
     protected fun sendMessage(message: String?) {
