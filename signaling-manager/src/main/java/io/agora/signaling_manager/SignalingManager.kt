@@ -1,21 +1,18 @@
 package io.agora.signaling_manager
 
-import io.agora.rtm.*
-
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import org.json.JSONObject
-import org.json.JSONException
-import android.view.SurfaceView
 import android.content.pm.PackageManager
-import android.view.View
+import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import io.agora.rtm.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
-import java.lang.Exception
 import java.nio.charset.StandardCharsets
-import java.util.HashSet
+import java.util.*
 
 open class SignalingManager(context: Context) {
     // The reference to the Android activity you use for video calling
@@ -23,7 +20,7 @@ open class SignalingManager(context: Context) {
     protected val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
-    protected var mListener: AgoraManagerListener? = null // The event handler for AgoraEngine events
+    protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the channel to join
@@ -44,7 +41,7 @@ open class SignalingManager(context: Context) {
         }
     }
 
-    fun setListener(mListener: AgoraManagerListener?) {
+    fun setListener(mListener: SignalingManagerListener?) {
         this.mListener = mListener
     }
 
@@ -66,8 +63,56 @@ open class SignalingManager(context: Context) {
         return null
     }
 
+    private val eventListener: RtmEventListener = object : RtmEventListener {
+        override fun onMessageEvent(event: MessageEvent) {
+            // Your Message Event handler
+        }
+
+        override fun onPresenceEvent(event: PresenceEvent) {
+            // Your Presence Event handler
+        }
+
+        override fun onTopicEvent(event: TopicEvent) {
+            // Your Topic Event handler
+        }
+
+        override fun onLockEvent(event: LockEvent) {
+            // Your Lock Event handler
+        }
+
+        override fun onStorageEvent(event: StorageEvent) {
+            // Your Storage Event handler
+        }
+
+        override fun onConnectionStateChanged(
+            channelName: String?,
+            state: RtmConstants.RtmConnectionState?,
+            reason: RtmConstants.RtmConnectionChangeReason?
+        ) {
+            super.onConnectionStateChanged(channelName, state, reason)
+        }
+
+
+        override fun onTokenPrivilegeWillExpire(channelName: String) {
+            // Your Token Privilege Will Expire Event handler
+        }
+    }
+
     protected open fun setupSignalingEngine(): Boolean {
         try {
+            val rtmConfig = RtmConfig.Builder(appId, localUid.toString())
+                .presenceTimeout(300)
+                .useStringUserId(false)
+                .eventListener(eventListener)
+                .build()
+
+            signalingEngine = RtmClient.create(rtmConfig)
+
+            try {
+
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
 
         } catch (e: Exception) {
             sendMessage(e.toString())
@@ -76,10 +121,35 @@ open class SignalingManager(context: Context) {
         return true
     }
 
+    class loginResultCallback : ResultCallback<String?> {
+        override fun onSuccess(responseInfo: String?) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onFailure(errorInfo: ErrorInfo?) {
+            TODO("Not yet implemented")
+        }
+    }
+
     fun joinChannel(): Int {
+        if (signalingEngine ==  null ) {
+            setupSignalingEngine()
+        }
         // Use channelName and token from the config file
-        val token = config!!.optString("rtcToken")
+        val token = config!!.optString("token")
         //return joinChannel(channelName, token)
+        val resultCallback:  ResultCallback<Void>
+
+        signalingEngine?.login(token, object : ResultCallback<Void?> {
+            override fun onFailure(errorInfo: ErrorInfo?) {
+                sendMessage("login failed:\n"+ errorInfo.toString())// Handle failure
+            }
+
+            override fun onSuccess(responseInfo: Void?) {
+                sendMessage("login success")
+            }
+        })
+
         return 0
     }
 
@@ -133,11 +203,9 @@ open class SignalingManager(context: Context) {
         )
     }
 
-    interface AgoraManagerListener {
+    interface SignalingManagerListener {
         fun onMessageReceived(message: String?)
-        fun onRemoteUserJoined(remoteUid: Int, surfaceView: SurfaceView?)
-        fun onRemoteUserLeft(remoteUid: Int)
-        fun onJoinChannelSuccess(channel: String?, uid: Int, elapsed: Int)
+        fun onSignalingEvent(eventType: String, eventArgs: SurfaceView?)
     }
 
     protected fun sendMessage(message: String?) {

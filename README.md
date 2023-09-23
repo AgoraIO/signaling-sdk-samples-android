@@ -24,7 +24,7 @@ This reference app includes several samples that illustrate the functionality an
 - [Data encryption](./src/data_encryption) - integrate built-in data encryption into your app using Signaling.
 - [Geofencing](./src/geofencing) - only connect to Signaling within the specified region.
 
-To view the UI implementation, open the relevant Activity Class file [here](android-reference-app/app/src/main/java/io/agora/signaling_reference_app).
+To view the UI implementation, open the relevant Activity Class file [here](signaling-reference-app/app/src/main/java/io/agora/signaling_reference_app).
 
 
 ## Prerequisites
@@ -49,7 +49,7 @@ Before getting started with this reference app, ensure you have the following se
 
 1. **Open the project**
 
-    Launch Android Studio. From the **File** menu, select **Open...** and navigate to the [android-reference-app](android-reference-app) folder. Start Gradle sync to automatically install all project dependencies.
+    Launch Android Studio. From the **File** menu, select **Open...** and navigate to the [signaling-reference-app](signaling-reference-app) folder. Start Gradle sync to automatically install all project dependencies.
 
 1. **Modify the project configuration**
 

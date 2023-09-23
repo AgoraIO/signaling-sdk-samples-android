@@ -10,7 +10,7 @@ You find the business logic for this quickstart sample in the [`AgoraManager`](s
 
 For context on this implementation, and a full explanation of the essential code snippets used in this example, read the **SDK quickstart** document.
 
-For the UI implementation of this example, refer to [`BasicImplementationActivity.kt`](../signaling-reference-app/app/src/main/java/io/agora/android_reference_app/BasicImplementationActivity.kt).
+For the UI implementation of this example, refer to [`BasicImplementationActivity.kt`](../signaling-reference-app/app/src/main/java/io/agora/signaling_reference_app/BasicImplementationActivity.kt).
 
 
 ## How to run this example

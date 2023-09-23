@@ -37,26 +37,24 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     protected open fun join() {
         // Join a channel
-        // agoraManager.joinChannel()
+        signalingManager.joinChannel()
     }
 
 
     protected open fun leave() {
         // Leave the channel
-        // agoraManager.leaveChannel()
+        signalingManager.leaveChannel()
         // Update the UI
         btnJoinLeave.text = getString(R.string.join)
     }
 
     fun joinLeave(view: View) {
         // Join/Leave button clicked
-    /*    if (!agoraManager.isJoined) {
+    if (!signalingManager.isJoined) {
             join()
         } else {
             leave()
         }
-
-     */
     }
 
     open fun displayMessage(messageText: String?, isSentMessage: Boolean) {
