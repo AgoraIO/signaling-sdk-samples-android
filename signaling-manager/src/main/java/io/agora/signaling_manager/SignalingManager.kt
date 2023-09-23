@@ -22,7 +22,7 @@ open class SignalingManager(context: Context) {
     private val activity: Activity
     protected val mContext: Context
 
-    protected var signalingEngine: io.agora.rtm.RtmClient? = null // The RTCEngine instance
+    protected var signalingEngine: RtmClient? = null // The RTCEngine instance
     protected var mListener: AgoraManagerListener? = null // The event handler for AgoraEngine events
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
