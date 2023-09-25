@@ -9,11 +9,15 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import io.agora.rtm.MessageEvent
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var signalingManager: SignalingManager
     protected lateinit var btnJoinLeave: Button
-
+    var channelName = ""
+    lateinit var editChannelName: EditText
+    lateinit var editUid: EditText
+    lateinit var editMessage: EditText
     
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
@@ -23,39 +27,70 @@ open class BasicImplementationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(layoutResourceId)
 
-        // Create an instance of the AgoraManager class
+        // Create an instance of the SignalingManager class
         initializeSignalingManager()
-    }
 
+        editChannelName = findViewById(R.id.editChannelName)
+        editChannelName.setText(signalingManager.channelName)
+
+        editUid = findViewById(R.id.editUid)
+        editUid.setText(signalingManager.localUid.toString())
+
+        editMessage = findViewById(R.id.editMessage)
+    }
 
     protected open fun initializeSignalingManager() {
         signalingManager = SignalingManager(this)
 
         // Set up a listener for updating the UI
-        // agoraManager.setListener(agoraManagerListener)
+        signalingManager.setListener(signalingManagerListener)
+    }
+
+    fun publishMessage(view: View) {
+        val message = editMessage.text.toString()
+        signalingManager.publishChannelMessage(message)
+        displayMessage(message, true)
+    }
+
+    protected open fun login() {
+        val uid = editUid.text.toString().toInt()
+        signalingManager.login(uid)
+    }
+
+    protected open fun logout() {
+        signalingManager.logout()
+    }
+
+    protected open fun subscribe() {
+        // Subscribe to a channel
+        channelName = editChannelName.text.toString()
+        signalingManager.subscribe(channelName)
     }
 
 
-
-    protected open fun join() {
-        // Join a channel
-        signalingManager.login()
-    }
-
-
-    protected open fun leave() {
-        // Leave the channel
+    protected open fun unsubscribe() {
+        // Unsubscribe from the channel
+        signalingManager.unsubscribe(channelName)
         signalingManager.logout()
         // Update the UI
-        btnJoinLeave.text = getString(R.string.join)
+        btnJoinLeave.text = getString(R.string.subscribe)
     }
 
-    fun joinLeave(view: View) {
-        // Join/Leave button clicked
-    if (!signalingManager.isJoined) {
-            join()
+    fun loginLogout(view: View) {
+        // Subscribe/Unsubscribe button clicked
+        if (!signalingManager.isLoggedIn) {
+            login()
         } else {
-            leave()
+            logout()
+        }
+    }
+
+    fun subscribeUnsubscribe(view: View) {
+        // Subscribe/Unsubscribe button clicked
+         if (!signalingManager.isSubscribed) {
+            subscribe()
+        } else {
+            unsubscribe()
         }
     }
 
@@ -77,7 +112,9 @@ open class BasicImplementationActivity : AppCompatActivity() {
             params.setMargins(15, 25, 100, 5)
         }
         // Add the textview to the linearlayout
-        messageList.addView(messageTextView, params)
+        runOnUiThread {
+            messageList.addView(messageTextView, params)
+        }
     }
 
     protected fun showMessage(message: String?) {
@@ -85,14 +122,40 @@ open class BasicImplementationActivity : AppCompatActivity() {
     }
 
 
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java", ReplaceWith("onBackPressedDispatcher.onBackPressed()"))
     override fun onBackPressed() {
         /* if (agoraManager.isJoined) {
             leave()
-        }
-
-         */
+        } */
         onBackPressedDispatcher.onBackPressed()
     }
 
+    protected val signalingManagerListener: SignalingManager.SignalingManagerListener
+        get() = object : SignalingManager.SignalingManagerListener {
+            override fun onMessageReceived(message: String?) {
+                showMessage(message)
+            }
+
+            override fun onSignalingEvent(eventType: String, eventArgs: Any) {
+                when (eventType) {
+                    "Message" -> {
+                        val messageEventArgs = eventArgs as MessageEvent
+                        displayMessage(messageEventArgs.message.toString(),false)
+                    }
+                    "Presence" -> {
+
+                    }
+                    "Topic" -> {
+
+                    }
+                    "Lock" -> {
+
+                    }
+                    "Storage" -> {
+
+                    }
+
+                }
+            }
+        }
 }

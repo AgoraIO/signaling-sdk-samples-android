@@ -1,12 +1,7 @@
 package io.agora.signaling_manager
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.view.SurfaceView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import io.agora.rtm.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -14,31 +9,31 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.*
 
+
 open class SignalingManager(context: Context) {
     // The reference to the Android activity you use for video calling
-    private val activity: Activity
+    //private val activity: Activity
     protected val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
     protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
-    var channelName: String // The name of the channel to join
+    var channelName: String // The name of the Signaling channel
     var localUid: Int // UID of the local user
     var remoteUids = HashSet<Int>() // An object to store uids of remote users
-    var isJoined = false // Status of the video call
+    var isLoggedIn = false // Login status
         private set
-    
+    var isSubscribed = false // Channel subscription status
+        private set
+
     init {
-        config = readConfig(context)
+        mContext = context
+        config = readConfig(mContext)
         appId = config!!.optString("appId")
         channelName = config!!.optString("channelName")
         localUid = config!!.optInt("uid")
-        mContext = context
-        activity = mContext as Activity
-        if (!checkSelfPermission()) {
-            ActivityCompat.requestPermissions(activity, REQUESTED_PERMISSIONS, PERMISSION_REQ_ID)
-        }
+        //activity = mContext as Activity
     }
 
     fun setListener(mListener: SignalingManagerListener?) {
@@ -64,24 +59,29 @@ open class SignalingManager(context: Context) {
     }
 
     private val eventListener: RtmEventListener = object : RtmEventListener {
-        override fun onMessageEvent(event: MessageEvent) {
+        override fun onMessageEvent(eventArgs: MessageEvent) {
             // Your Message Event handler
+            mListener?.onSignalingEvent("Message", eventArgs)
         }
 
-        override fun onPresenceEvent(event: PresenceEvent) {
+        override fun onPresenceEvent(eventArgs: PresenceEvent) {
             // Your Presence Event handler
+            mListener?.onSignalingEvent("Presence", eventArgs)
         }
 
-        override fun onTopicEvent(event: TopicEvent) {
+        override fun onTopicEvent(eventArgs: TopicEvent) {
             // Your Topic Event handler
+            mListener?.onSignalingEvent("Topic", eventArgs)
         }
 
-        override fun onLockEvent(event: LockEvent) {
+        override fun onLockEvent(eventArgs: LockEvent) {
             // Your Lock Event handler
+            mListener?.onSignalingEvent("Lock", eventArgs)
         }
 
-        override fun onStorageEvent(event: StorageEvent) {
+        override fun onStorageEvent(eventArgs: StorageEvent) {
             // Your Storage Event handler
+            mListener?.onSignalingEvent("Storage", eventArgs)
         }
 
         override fun onConnectionStateChanged(
@@ -92,28 +92,20 @@ open class SignalingManager(context: Context) {
             super.onConnectionStateChanged(channelName, state, reason)
         }
 
-
         override fun onTokenPrivilegeWillExpire(channelName: String) {
             // Your Token Privilege Will Expire Event handler
         }
     }
 
-    protected open fun setupSignalingEngine(): Boolean {
+    protected open fun setupSignalingEngine(uid: Int): Boolean {
         try {
-            val rtmConfig = RtmConfig.Builder(appId, localUid.toString())
+            val rtmConfig = RtmConfig.Builder(appId, uid.toString())
                 .presenceTimeout(300)
                 .useStringUserId(false)
                 .eventListener(eventListener)
                 .build()
-
             signalingEngine = RtmClient.create(rtmConfig)
-
-            try {
-
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-
+            localUid = uid
         } catch (e: Exception) {
             sendMessage(e.toString())
             return false
@@ -121,9 +113,9 @@ open class SignalingManager(context: Context) {
         return true
     }
 
-    fun login(): Int {
+    fun login(uid: Int): Int {
         if (signalingEngine ==  null ) {
-            setupSignalingEngine()
+            setupSignalingEngine(uid)
         }
         // Use channelName and token from the config file
         val token = config!!.optString("token")
@@ -134,25 +126,15 @@ open class SignalingManager(context: Context) {
             }
 
             override fun onSuccess(responseInfo: Void?) {
-                isJoined = true
+                isLoggedIn = true
                 sendMessage("login success")
             }
         })
         return 0
     }
 
-    fun joinChannel(channelName: String, token: String?): Int {
-        // Ensure that necessary Android permissions have been granted
-        if (!checkSelfPermission()) {
-            sendMessage("Permissions were not granted")
-            return -1
-        }
-
-        return 0
-    }
-
     fun logout() {
-        if (!isJoined) {
+        if (!isLoggedIn) {
             sendMessage("Join a channel first")
         } else {
             // To leave a channel, call the `leaveChannel` method
@@ -162,7 +144,8 @@ open class SignalingManager(context: Context) {
                 }
 
                 override fun onSuccess(responseInfo: Void?) {
-                    isJoined = false
+                    isLoggedIn = false
+                    isSubscribed = false
                     sendMessage("logout success")
                 }
             })
@@ -172,38 +155,65 @@ open class SignalingManager(context: Context) {
         }
     }
 
-    protected fun destroySignalingEngine() {
-        // Release the RtcEngine instance to free up resources
-        //RtcEngine.destroy()
-       // signalingEngine = null
+    fun subscribe(channelName: String): Int {
+        // Subscribe to a channel
+        val subscribeOptions = SubscribeOptions(true, true, true, true)
+
+        signalingEngine?.subscribe(channelName, subscribeOptions, object: ResultCallback<Void?> {
+            override fun onFailure(errorInfo: ErrorInfo?) {
+                sendMessage("subscribe failed:\n"+ errorInfo.toString())
+            }
+
+            override fun onSuccess(responseInfo: Void?) {
+                isSubscribed = true
+                sendMessage("subscribe success")
+            }
+        })
+        return 0
     }
 
-    private fun checkSelfPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            mContext,
-            REQUESTED_PERMISSIONS[0]
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(
-                    mContext,
-                    REQUESTED_PERMISSIONS[1]
-                ) == PackageManager.PERMISSION_GRANTED
+    fun unsubscribe(channelName: String): Int {
+        signalingEngine?.unsubscribe(channelName, object: ResultCallback<Void?> {
+            override fun onFailure(errorInfo: ErrorInfo?) {
+                sendMessage("unsubscribe failed:\n"+ errorInfo.toString())
+            }
+
+            override fun onSuccess(responseInfo: Void?) {
+                isSubscribed = false
+                sendMessage("unsubscribe success")
+            }
+        })
+        return 0
     }
 
-    companion object {
-        protected const val PERMISSION_REQ_ID = 22
-        protected val REQUESTED_PERMISSIONS = arrayOf(
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA
-        )
+    fun publishChannelMessage (message: String): Int {
+        val publishOptions = PublishOptions()
+
+        signalingEngine?.publish(channelName, message, publishOptions, object: ResultCallback<Void?> {
+            override fun onFailure(errorInfo: ErrorInfo?) {
+                sendMessage("failed to send message:\n"+ errorInfo.toString())
+            }
+
+            override fun onSuccess(responseInfo: Void?) {
+                sendMessage("Message sent")
+            }
+        })
+
+        return 0
+    }
+
+    protected open fun destroySignalingEngine() {
+        // Release the SignalingEngine instance to free up resources
+        signalingEngine = null
     }
 
     interface SignalingManagerListener {
         fun onMessageReceived(message: String?)
-        fun onSignalingEvent(eventType: String, eventArgs: Map<String, Any>)
+        fun onSignalingEvent(eventType: String, eventArgs: Any)
     }
 
     protected fun sendMessage(message: String?) {
-        mListener!!.onMessageReceived(message)
+        mListener?.onMessageReceived(message)
     }
 
 }

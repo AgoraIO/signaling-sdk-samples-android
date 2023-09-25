@@ -1,36 +1,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
+    android:padding="5dp"
     android:background="#ECE5DD">
 
-<Button
-        android:id="@+id/btn_join_leave"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:onClick="joinLeave"
-        android:text="@string/join" />
+        android:layout_marginHorizontal="5dp"
+        android:onClick="loginLogout"
+        android:text="@string/login" />
+
+    <EditText
+        android:id="@+id/editUid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/btnLogin"
+        android:layout_alignTop="@id/btnLogin"
+        android:layout_toStartOf="@id/btnLogin"
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/uid_hint"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/btnSubscribe"
+        android:layout_width="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnLogin"
+        android:onClick="subscribeUnsubscribe"
+        android:layout_marginHorizontal="5dp"
+        android:text="@string/subscribe" />
 
     <EditText
         android:id="@+id/editChannelName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/btn_join_leave"
-        android:layout_alignTop="@id/btn_join_leave"
-        android:layout_toStartOf="@id/btn_join_leave"
-        android:layout_margin="5dp"
+        android:layout_alignBottom="@id/btnSubscribe"
+        android:layout_alignTop="@id/btnSubscribe"
+        android:layout_alignStart="@id/editUid"
+        android:layout_alignEnd="@id/editUid"
+        android:layout_marginVertical="5dp"
         android:padding="5dp"
         android:background="#FFFFFF"
-        android:hint="Enter recepient username" />
+        android:hint="@string/channel_name_hint" />
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btn_send_message"
+        android:layout_above="@id/btnPublish"
         android:layout_below="@id/editChannelName"
         android:background="#ECE5DD">
 
@@ -43,25 +67,25 @@
     </ScrollView>
 
     <EditText
-        android:id="@+id/et_msg_content"
+        android:id="@+id/editMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/btn_send_message"
-        android:layout_alignBottom="@id/btn_send_message"
+        android:layout_alignBottom="@id/btnPublish"
         android:layout_margin="5dp"
-        android:padding="5dp"
+        android:layout_toStartOf="@id/btnPublish"
         android:background="#FFFFFF"
-        android:hint="@string/message" />
+        android:hint="@string/message"
+        android:padding="5dp" />
 
     <Button
-        android:id="@+id/btn_send_message"
+        android:id="@+id/btnPublish"
         android:layout_width="50dp"
         android:layout_margin="5dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:onClick="sendMessage"
-        android:text=">>" />
+        android:onClick="publishMessage"
+        android:text="@string/send" />
 
 </RelativeLayout>
 

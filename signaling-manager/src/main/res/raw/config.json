@@ -1,8 +1,8 @@
 {
   "uid": "1",
   "appId": "17cb7ec4e5d845498de0f75eeac4273a",
-  "channelName": "demoChannel",
-  "token": "007eJxSYFD03cZvNM0ivaTr7Rn5TTEm6+YxPb7S9/OGxRux60b7tc8qMBiaJyeZpyabpJqmWJiYmlhapKQapJmbpqYmJpsYmRsnfj7Jl1qgxchwcqE8AyMDEwMjAyMDiM/IYAgIAAD//9CMHqQ=",
+  "channelName": "demo",
+  "token": "007eJxSYGC+xHJbYp9XQNnSRekhQfWFu2+94PO8fDcyfH93zmyXqx8VGAzNk5PMU5NNUk1TLExMTSwtUlIN0sxNU1MTk02MzI0T5VIEUgu0GBkm8WiwMjIwMTAyMDKA+IwMhoAAAAD//76LHQs=",
   "proxyUrl": "http://localhost:8080/",
   "serverUrl": "https://agora-token-server-5rci.onrender.com",
   "tokenExpiryTime": "600",
@@ -14,5 +14,5 @@
   "logLevel": "debug",
   "cloudProxy": true,
   "useStringUserId": false,
-  "rtcToken": "007eJxSYAiZVbE4unLu5d9XVpy8lZTz85eojnquiL771xTOTaUZOxUUGAzNk5PMU5NNUk1TLExMTSwtUlIN0sxNU1MTk02MzI0TZ51bnTJrtWSq4qa7LIwMEAjiczOkpObmO2ck5uWl5jAyGAICAAD//xUuJhA="
+  "rtcToken": ""
 }

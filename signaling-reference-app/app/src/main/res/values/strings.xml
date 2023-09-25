@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">Signaling reference app</string>
     <string name="main_title">Agora Signaling SDK Samples</string>
-    <string name="leave">Leave</string>
-    <string name="join">Join</string>
-    <string name="authentication_server_hint">Token server URL</string>
+    <string name="uid_hint">Enter a user Id</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Unsubscribe</string>
     <string name="channel_name_hint">Channel name here</string>
+    <string name="channelName_hint">Enter a channel name</string>
+    <string name="authentication_server_hint">Token server URL</string>
     <string name="message">Message</string>
+    <string name="send"><![CDATA[>>]]></string>
 </resources>
