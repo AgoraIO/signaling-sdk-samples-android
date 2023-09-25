@@ -1,23 +1,30 @@
 package io.agora.signaling_reference_app
 
 import io.agora.signaling_manager.SignalingManager
-//import io.agora.agora_manager.AgoraManager.AgoraManagerListener
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import io.agora.rtm.MessageEvent
+import io.agora.rtm.PresenceEvent
+import io.agora.rtm.RtmConstants
+import org.json.JSONObject
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var signalingManager: SignalingManager
-    protected lateinit var btnJoinLeave: Button
+    private lateinit var btnSubscribe: Button
+    private lateinit var btnLogin: Button
+    private lateinit var editChannelName: EditText
+    private lateinit var editUid: EditText
+    private lateinit var editMessage: EditText
     var channelName = ""
-    lateinit var editChannelName: EditText
-    lateinit var editUid: EditText
-    lateinit var editMessage: EditText
     
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
@@ -29,6 +36,10 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
         // Create an instance of the SignalingManager class
         initializeSignalingManager()
+
+        btnLogin = findViewById(R.id.btnLogin)
+        btnSubscribe = findViewById(R.id.btnSubscribe)
+        btnSubscribe.isEnabled = false
 
         editChannelName = findViewById(R.id.editChannelName)
         editChannelName.setText(signalingManager.channelName)
@@ -48,8 +59,11 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     fun publishMessage(view: View) {
         val message = editMessage.text.toString()
-        signalingManager.publishChannelMessage(message)
-        displayMessage(message, true)
+        val result = signalingManager.publishChannelMessage(message)
+        if (result == 0) {
+            displaySentMessage(message)
+            editMessage.setText("")
+        }
     }
 
     protected open fun login() {
@@ -72,8 +86,6 @@ open class BasicImplementationActivity : AppCompatActivity() {
         // Unsubscribe from the channel
         signalingManager.unsubscribe(channelName)
         signalingManager.logout()
-        // Update the UI
-        btnJoinLeave.text = getString(R.string.subscribe)
     }
 
     fun loginLogout(view: View) {
@@ -94,7 +106,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         }
     }
 
-    open fun displayMessage(messageText: String?, isSentMessage: Boolean) {
+    open fun displaySentMessage(messageText: String) {
         // Create a new TextView
         val messageTextView = TextView(this)
         messageTextView.text = messageText
@@ -103,14 +115,11 @@ open class BasicImplementationActivity : AppCompatActivity() {
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT
         )
-        if (isSentMessage) {
-            params.gravity = Gravity.END
-            messageTextView.setBackgroundColor(Color.parseColor("#DCF8C6"))
-            params.setMargins(100, 25, 15, 5)
-        } else {
-            messageTextView.setBackgroundColor(Color.parseColor("white"))
-            params.setMargins(15, 25, 100, 5)
-        }
+
+        params.gravity = Gravity.END
+        messageTextView.setBackgroundColor(Color.parseColor("#DCF8C6"))
+        params.setMargins(100, 25, 15, 5)
+
         // Add the textview to the linearlayout
         runOnUiThread {
             messageList.addView(messageTextView, params)
@@ -124,10 +133,41 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java", ReplaceWith("onBackPressedDispatcher.onBackPressed()"))
     override fun onBackPressed() {
-        /* if (agoraManager.isJoined) {
-            leave()
-        } */
+        if (signalingManager.isLoggedIn) {
+            signalingManager.logout()
+        }
         onBackPressedDispatcher.onBackPressed()
+    }
+
+    fun displayReceivedMessage(publisher: String, message: String) {
+        // Create a SpannableStringBuilder for the header
+        val header = "from: $publisher"
+        val headerSpannable = SpannableStringBuilder(header)
+        headerSpannable.setSpan(RelativeSizeSpan(0.8f), 0, header.length, 0)
+        headerSpannable.setSpan(ForegroundColorSpan(getColor(R.color.agora_blue)), 0, header.length, 0)
+
+        // Create a SpannableString for the body
+        val bodySpannable = SpannableString(message)
+
+        // Set the text in the TextView
+        val formattedText = SpannableStringBuilder().append(headerSpannable).append("\n").append(bodySpannable)
+
+        // Create a new TextView
+        val messageTextView = TextView(this)
+        messageTextView.text = formattedText
+        messageTextView.setPadding(10, 10, 10, 10)
+        val messageList = findViewById<LinearLayout>(R.id.messageList)
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT
+        )
+
+        messageTextView.setBackgroundColor(Color.parseColor("white"))
+        params.setMargins(15, 25, 100, 5)
+
+        // Add the textview to the linearlayout
+        runOnUiThread {
+            messageList.addView(messageTextView, params)
+        }
     }
 
     protected val signalingManagerListener: SignalingManager.SignalingManagerListener
@@ -140,9 +180,23 @@ open class BasicImplementationActivity : AppCompatActivity() {
                 when (eventType) {
                     "Message" -> {
                         val messageEventArgs = eventArgs as MessageEvent
-                        displayMessage(messageEventArgs.message.data.toString(),false)
+                        val jsonObject = JSONObject(messageEventArgs.message.data.toString())
+                        val message: String = jsonObject.optString("message", "")
+                        displayReceivedMessage(eventArgs.publisherId, message)
+                        //displayMessage(message,false)
                     }
                     "Presence" -> {
+                        val presenceEventArgs = eventArgs as PresenceEvent
+                        when (eventArgs.eventType) {
+                            RtmConstants.RtmPresenceEventType.REMOTE_JOIN,
+                            RtmConstants.RtmPresenceEventType.REMOTE_LEAVE,
+                            RtmConstants.RtmPresenceEventType.SNAPSHOT ->{
+                                signalingManager.getOnlineUsers()
+                            }
+                        else ->{
+
+                            }
+                        }
 
                     }
                     "Topic" -> {
@@ -155,6 +209,28 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
                     }
 
+                }
+            }
+
+            override fun onSubscribeUnsubscribe(subscribed: Boolean) {
+                runOnUiThread {
+                    if (subscribed) {
+                        btnSubscribe.setText(R.string.unsubscribe)
+                    } else {
+                        btnSubscribe.setText(R.string.subscribe)
+                    }
+                }
+            }
+
+            override fun onLoginLogout(loggedIn: Boolean) {
+                runOnUiThread {
+                    btnSubscribe.isEnabled = loggedIn
+
+                    if (loggedIn) {
+                        btnLogin.setText(R.string.logout)
+                    } else {
+                        btnLogin.setText(R.string.login)
+                    }
                 }
             }
         }

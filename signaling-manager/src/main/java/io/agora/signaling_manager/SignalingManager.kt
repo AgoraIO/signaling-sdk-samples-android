@@ -1,13 +1,12 @@
 package io.agora.signaling_manager
 
-import android.app.Activity
-import android.content.Context
 import io.agora.rtm.*
+
+import android.content.Context
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.util.*
 
 
 open class SignalingManager(context: Context) {
@@ -20,8 +19,9 @@ open class SignalingManager(context: Context) {
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
+    var channelType = RtmConstants.RtmChannelType.MESSAGE
+
     var localUid: Int // UID of the local user
-    var remoteUids = HashSet<Int>() // An object to store uids of remote users
     var isLoggedIn = false // Login status
         private set
     var isSubscribed = false // Channel subscription status
@@ -107,7 +107,7 @@ open class SignalingManager(context: Context) {
             signalingEngine = RtmClient.create(rtmConfig)
             localUid = uid
         } catch (e: Exception) {
-            sendMessage(e.toString())
+            notify(e.toString())
             return false
         }
         return true
@@ -122,12 +122,13 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                sendMessage("login failed:\n"+ errorInfo.toString())// Handle failure
+                notify("login failed:\n"+ errorInfo.toString())// Handle failure
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isLoggedIn = true
-                sendMessage("login success")
+                notify("login success")
+                mListener?.onLoginLogout(isLoggedIn)
             }
         })
         return 0
@@ -135,18 +136,22 @@ open class SignalingManager(context: Context) {
 
     fun logout() {
         if (!isLoggedIn) {
-            sendMessage("Join a channel first")
+            notify("Join a channel first")
         } else {
             // To leave a channel, call the `leaveChannel` method
             signalingEngine?.logout(object: ResultCallback<Void?> {
                 override fun onFailure(errorInfo: ErrorInfo?) {
-                    sendMessage("logout failed:\n"+ errorInfo.toString())
+                    notify("logout failed:\n"+ errorInfo.toString())
                 }
 
                 override fun onSuccess(responseInfo: Void?) {
                     isLoggedIn = false
-                    isSubscribed = false
-                    sendMessage("logout success")
+                    if (isSubscribed) {
+                        isSubscribed = false
+                        mListener?.onSubscribeUnsubscribe(isSubscribed)
+                    }
+                    notify("logout success")
+                    mListener?.onLoginLogout(isLoggedIn)
                 }
             })
 
@@ -161,12 +166,13 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.subscribe(channelName, subscribeOptions, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                sendMessage("subscribe failed:\n"+ errorInfo.toString())
+                notify("subscribe failed:\n"+ errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isSubscribed = true
-                sendMessage("subscribe success")
+                mListener?.onSubscribeUnsubscribe(isSubscribed)
+                notify("subscribe success")
             }
         })
         return 0
@@ -175,12 +181,13 @@ open class SignalingManager(context: Context) {
     fun unsubscribe(channelName: String): Int {
         signalingEngine?.unsubscribe(channelName, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                sendMessage("unsubscribe failed:\n"+ errorInfo.toString())
+                notify("unsubscribe failed:\n"+ errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isSubscribed = false
-                sendMessage("unsubscribe success")
+                notify("unsubscribe success")
+                mListener?.onSubscribeUnsubscribe(isSubscribed)
             }
         })
         return 0
@@ -188,18 +195,36 @@ open class SignalingManager(context: Context) {
 
     fun publishChannelMessage (message: String): Int {
         val publishOptions = PublishOptions()
+        var result = 0
 
         signalingEngine?.publish(channelName, message, publishOptions, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                sendMessage("failed to send message:\n"+ errorInfo.toString())
+                notify("Failed to send message:\n"+ errorInfo.toString())
+                result =  1
             }
 
             override fun onSuccess(responseInfo: Void?) {
-                sendMessage("Message sent")
+                notify("Message sent")
             }
         })
 
-        return 0
+        return result
+    }
+
+    fun getOnlineUsers () {
+        val getOnlineUsersOptions = GetOnlineUsersOptions(true, true)
+        signalingEngine?.presence?.getOnlineUsers(channelName, channelType, getOnlineUsersOptions,  object: ResultCallback<GetOnlineUsersResult?> {
+            override fun onFailure(errorInfo: ErrorInfo?) {
+
+            }
+
+            override fun onSuccess(getOnlineUsersResult: GetOnlineUsersResult?) {
+                //notify("${getOnlineUsersResult?.totalOccupancy.toString()} users")
+                var list = getOnlineUsersResult?.userStateList
+                val userIds: List<String>? = list?.map { it.userId }
+                notify("${userIds?.size} users")
+            }
+        })
     }
 
     protected open fun destroySignalingEngine() {
@@ -210,9 +235,12 @@ open class SignalingManager(context: Context) {
     interface SignalingManagerListener {
         fun onMessageReceived(message: String?)
         fun onSignalingEvent(eventType: String, eventArgs: Any)
+        fun onSubscribeUnsubscribe(subscribed: Boolean)
+        fun onLoginLogout(loggedIn: Boolean)
     }
 
-    protected fun sendMessage(message: String?) {
+    protected fun notify(message: String?) {
+        // Sends notification message to the Ui
         mListener?.onMessageReceived(message)
     }
 

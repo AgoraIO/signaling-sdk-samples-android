@@ -33,7 +33,8 @@ android {
 }
 
 dependencies {
-    implementation files('libs/agora-rtm-sdk.jar')
+    //implementation files('libs/agora-rtm-sdk.jar')
+    implementation 'io.agora:agora-rtm:2.1.6'
     implementation project(':signaling-manager')
     // implementation project(':authentication-workflow')
 
