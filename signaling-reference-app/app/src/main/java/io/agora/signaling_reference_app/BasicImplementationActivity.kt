@@ -140,7 +140,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
                 when (eventType) {
                     "Message" -> {
                         val messageEventArgs = eventArgs as MessageEvent
-                        displayMessage(messageEventArgs.message.toString(),false)
+                        displayMessage(messageEventArgs.message.data.toString(),false)
                     }
                     "Presence" -> {
 
