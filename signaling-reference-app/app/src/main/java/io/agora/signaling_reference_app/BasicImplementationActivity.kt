@@ -17,7 +17,6 @@ import io.agora.rtm.MessageEvent
 import io.agora.rtm.PresenceEvent
 import io.agora.rtm.RtmConstants
 import org.json.JSONObject
-import kotlin.random.Random
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var signalingManager: SignalingManager
@@ -27,6 +26,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     private lateinit var editUid: EditText
     private lateinit var editMessage: EditText
     private lateinit var userListLayout: LinearLayout
+    private val userIconsMap = mutableMapOf<String, View>()
     var channelName = ""
     
     // The overridable UI layout for this activity
@@ -172,32 +172,59 @@ open class BasicImplementationActivity : AppCompatActivity() {
             messageList.addView(messageTextView, params)
         }
     }
-
+    
     fun updateUserList(userList: List<String>?) {
-        runOnUiThread {
-            userListLayout.removeAllViews()
+        val iconsToRemove = mutableListOf<String>()
+
+        // Iterate over the existing user icons in the map
+        for ((userId, userIconView) in userIconsMap) {
+            // Check if the user is not in the updated user list
+            if (userList == null || userId !in userList) {
+                // Mark this user icon for removal
+                iconsToRemove.add(userId)
+                runOnUiThread {
+                    // Remove the user icon from the UI
+                    userListLayout.removeView(userIconView)
+                }
+            }
         }
 
+        // Remove the user icons that need to be removed
+        for (userIdToRemove in iconsToRemove) {
+            userIconsMap.remove(userIdToRemove)
+        }
+
+        // Iterate over the updated user list and add new user icons
         userList?.forEach { item ->
-            val userIconView = LayoutInflater.from(this).inflate(R.layout.user_icon_layout, null)
-            val userIdTextView = userIconView.findViewById<TextView>(R.id.userIcon)
-
-            userIdTextView.text = item // Set your user ID
-
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(0, 0, 20, 0)  // Adjust the right margin to add spacing
-            userIdTextView.layoutParams = params
-
-            runOnUiThread {
-                // Add the user icon to the list
-                userListLayout.addView(userIconView)
+            if (!userIconsMap.containsKey(item)) {
+                val userIconView = createUserIcon(item)
+                userIconsMap[item] = userIconView
+                runOnUiThread {
+                    userListLayout.addView(userIconView)
+                }
             }
         }
     }
 
+    private fun createUserIcon(userId: String): View {
+        val userIconView = LayoutInflater.from(this).inflate(
+            R.layout.user_icon_layout, userListLayout, false)
+
+        val userIdTextView = userIconView.findViewById<TextView>(R.id.userIcon)
+        userIdTextView.text = userId // Set the user ID
+
+        // Set the layout parameters
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.setMargins(0, 0, 20, 0)  // Adjust the right margin to add spacing
+        userIdTextView.layoutParams = params
+
+        // Add view to the map
+        userIconsMap[userId] = userIconView
+        return userIconView
+    }
 
     protected val signalingManagerListener: SignalingManager.SignalingManagerListener
         get() = object : SignalingManager.SignalingManagerListener {
@@ -216,7 +243,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
                     }
                     "Presence" -> {
                         val presenceEventArgs = eventArgs as PresenceEvent
-                        when (eventArgs.eventType) {
+                        when (presenceEventArgs.eventType) {
                             RtmConstants.RtmPresenceEventType.REMOTE_JOIN,
                             RtmConstants.RtmPresenceEventType.REMOTE_LEAVE,
                             RtmConstants.RtmPresenceEventType.SNAPSHOT ->{
@@ -248,6 +275,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
                     } else {
                         btnSubscribe.setText(R.string.subscribe)
                         userListLayout.removeAllViews()
+                        userIconsMap.clear()
                     }
                 }
             }
