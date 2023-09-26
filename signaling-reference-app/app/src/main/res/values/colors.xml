@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark_gray">#FFA9A9A9</color>
     <color name="agora_blue">#FF009dff</color>
+    <color name="user_icon">#FF03DAC5</color>
 </resources>

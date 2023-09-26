@@ -183,7 +183,13 @@ open class BasicImplementationActivity : AppCompatActivity() {
             val userIdTextView = userIconView.findViewById<TextView>(R.id.userIcon)
 
             userIdTextView.text = item // Set your user ID
-            userIdTextView.setBackgroundColor(generateRandomLightColor())
+
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(0, 0, 20, 0)  // Adjust the right margin to add spacing
+            userIdTextView.layoutParams = params
 
             runOnUiThread {
                 // Add the user icon to the list
@@ -262,11 +268,4 @@ open class BasicImplementationActivity : AppCompatActivity() {
                 updateUserList(userList)
             }
         }
-
-    fun generateRandomLightColor(): Int {
-        val r = Random.nextInt(150, 256) // Red component biased towards higher values
-        val g = Random.nextInt(150, 256) // Green component biased towards higher values
-        val b = Random.nextInt(150, 256) // Blue component biased towards higher values
-        return Color.rgb(r, g, b)
-    }
 }

@@ -120,12 +120,12 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("login failed:\n"+ errorInfo.toString())// Handle failure
+                notify("Login failed:\n"+ errorInfo.toString())// Handle failure
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isLoggedIn = true
-                notify("login success")
+                notify("Successfully logged in")
                 mListener?.onLoginLogout(isLoggedIn)
             }
         })
@@ -139,7 +139,7 @@ open class SignalingManager(context: Context) {
             // To leave a channel, call the `leaveChannel` method
             signalingEngine?.logout(object: ResultCallback<Void?> {
                 override fun onFailure(errorInfo: ErrorInfo?) {
-                    notify("logout failed:\n"+ errorInfo.toString())
+                    notify("Logout failed:\n"+ errorInfo.toString())
                 }
 
                 override fun onSuccess(responseInfo: Void?) {
@@ -148,7 +148,7 @@ open class SignalingManager(context: Context) {
                         isSubscribed = false
                         mListener?.onSubscribeUnsubscribe(isSubscribed)
                     }
-                    notify("logout success")
+                    notify("Logged out successfully")
                     mListener?.onLoginLogout(isLoggedIn)
                 }
             })
@@ -164,13 +164,13 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.subscribe(channelName, subscribeOptions, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("subscribe failed:\n"+ errorInfo.toString())
+                notify("Subscribe failed:\n"+ errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isSubscribed = true
                 mListener?.onSubscribeUnsubscribe(isSubscribed)
-                notify("subscribe success")
+                notify("Subscribed to channel: $channelName")
             }
         })
         return 0
@@ -179,12 +179,12 @@ open class SignalingManager(context: Context) {
     fun unsubscribe(channelName: String): Int {
         signalingEngine?.unsubscribe(channelName, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("unsubscribe failed:\n"+ errorInfo.toString())
+                notify("Unsubscribe failed:\n"+ errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
                 isSubscribed = false
-                notify("unsubscribe success")
+                notify("Unsubscribed from channel: $channelName")
                 mListener?.onSubscribeUnsubscribe(isSubscribed)
             }
         })
@@ -214,11 +214,10 @@ open class SignalingManager(context: Context) {
         val getOnlineUsersOptions = GetOnlineUsersOptions(true, true)
         signalingEngine?.presence?.getOnlineUsers(channelName, channelType, getOnlineUsersOptions,  object: ResultCallback<GetOnlineUsersResult?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-
+                notify("Failed to obtain user list")
             }
 
             override fun onSuccess(getOnlineUsersResult: GetOnlineUsersResult?) {
-                //notify("${getOnlineUsersResult?.totalOccupancy.toString()} users")
                 val list = getOnlineUsersResult?.userStateList
                 val userList: List<String> = list?.map { it.userId } ?: emptyList()
                 mListener?.onUserListUpdated(userList)
