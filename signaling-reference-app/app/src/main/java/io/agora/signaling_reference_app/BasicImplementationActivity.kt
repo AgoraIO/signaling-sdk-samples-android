@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import io.agora.rtm.MessageEvent
 import io.agora.rtm.PresenceEvent
 import io.agora.rtm.RtmConstants
 import org.json.JSONObject
+import kotlin.random.Random
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var signalingManager: SignalingManager
@@ -24,6 +26,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     private lateinit var editChannelName: EditText
     private lateinit var editUid: EditText
     private lateinit var editMessage: EditText
+    private lateinit var userListLayout: LinearLayout
     var channelName = ""
     
     // The overridable UI layout for this activity
@@ -48,6 +51,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         editUid.setText(signalingManager.localUid.toString())
 
         editMessage = findViewById(R.id.editMessage)
+        userListLayout = findViewById<LinearLayout>(R.id.userList)
     }
 
     protected open fun initializeSignalingManager() {
@@ -85,7 +89,6 @@ open class BasicImplementationActivity : AppCompatActivity() {
     protected open fun unsubscribe() {
         // Unsubscribe from the channel
         signalingManager.unsubscribe(channelName)
-        signalingManager.logout()
     }
 
     fun loginLogout(view: View) {
@@ -170,6 +173,26 @@ open class BasicImplementationActivity : AppCompatActivity() {
         }
     }
 
+    fun updateUserList(userList: List<String>?) {
+        runOnUiThread {
+            userListLayout.removeAllViews()
+        }
+
+        userList?.forEach { item ->
+            val userIconView = LayoutInflater.from(this).inflate(R.layout.user_icon_layout, null)
+            val userIdTextView = userIconView.findViewById<TextView>(R.id.userIcon)
+
+            userIdTextView.text = item // Set your user ID
+            userIdTextView.setBackgroundColor(generateRandomLightColor())
+
+            runOnUiThread {
+                // Add the user icon to the list
+                userListLayout.addView(userIconView)
+            }
+        }
+    }
+
+
     protected val signalingManagerListener: SignalingManager.SignalingManagerListener
         get() = object : SignalingManager.SignalingManagerListener {
             override fun onMessageReceived(message: String?) {
@@ -218,6 +241,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
                         btnSubscribe.setText(R.string.unsubscribe)
                     } else {
                         btnSubscribe.setText(R.string.subscribe)
+                        userListLayout.removeAllViews()
                     }
                 }
             }
@@ -233,5 +257,16 @@ open class BasicImplementationActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            override fun onUserListUpdated(userList: List<String>) {
+                updateUserList(userList)
+            }
         }
+
+    fun generateRandomLightColor(): Int {
+        val r = Random.nextInt(150, 256) // Red component biased towards higher values
+        val g = Random.nextInt(150, 256) // Green component biased towards higher values
+        val b = Random.nextInt(150, 256) // Blue component biased towards higher values
+        return Color.rgb(r, g, b)
+    }
 }

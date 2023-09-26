@@ -11,4 +11,5 @@
     <string name="authentication_server_hint">Token server URL</string>
     <string name="message">Message</string>
     <string name="send"><![CDATA[>>]]></string>
+    <string name="users_in_the_channel">Users in the channel:</string>
 </resources>

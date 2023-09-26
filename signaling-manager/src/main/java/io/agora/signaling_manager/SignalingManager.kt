@@ -10,8 +10,6 @@ import java.nio.charset.StandardCharsets
 
 
 open class SignalingManager(context: Context) {
-    // The reference to the Android activity you use for video calling
-    //private val activity: Activity
     protected val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
@@ -212,6 +210,7 @@ open class SignalingManager(context: Context) {
     }
 
     fun getOnlineUsers () {
+
         val getOnlineUsersOptions = GetOnlineUsersOptions(true, true)
         signalingEngine?.presence?.getOnlineUsers(channelName, channelType, getOnlineUsersOptions,  object: ResultCallback<GetOnlineUsersResult?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -220,9 +219,9 @@ open class SignalingManager(context: Context) {
 
             override fun onSuccess(getOnlineUsersResult: GetOnlineUsersResult?) {
                 //notify("${getOnlineUsersResult?.totalOccupancy.toString()} users")
-                var list = getOnlineUsersResult?.userStateList
-                val userIds: List<String>? = list?.map { it.userId }
-                notify("${userIds?.size} users")
+                val list = getOnlineUsersResult?.userStateList
+                val userList: List<String> = list?.map { it.userId } ?: emptyList()
+                mListener?.onUserListUpdated(userList)
             }
         })
     }
@@ -237,6 +236,7 @@ open class SignalingManager(context: Context) {
         fun onSignalingEvent(eventType: String, eventArgs: Any)
         fun onSubscribeUnsubscribe(subscribed: Boolean)
         fun onLoginLogout(loggedIn: Boolean)
+        fun onUserListUpdated(userList: List<String>)
     }
 
     protected fun notify(message: String?) {

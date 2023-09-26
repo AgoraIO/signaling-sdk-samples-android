@@ -1,0 +1,13 @@
+<!-- user_icon_layout.xml -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/userIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:textSize="14sp"
+    android:background="@color/agora_blue"
+    android:layout_marginHorizontal="5dp"
+    android:gravity="center_vertical"
+    app:drawableStartCompat="@drawable/user">
+</TextView>
