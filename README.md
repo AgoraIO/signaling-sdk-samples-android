@@ -1,4 +1,4 @@
-# Agora Signaling SDK for Android reference app
+# Android reference app for Agora Signaling SDK
 
 This repository holds the code examples used for the [Agora Signaling SDK for Android](https://docs-beta.agora.io/en/signaling/overview/product-overview?platform=android) documentation. It is a robust and comprehensive documentation reference app for Android, designed to enhance your productivity and understanding. It's built to be flexible, easily extensible, and beginner-friendly.
 
