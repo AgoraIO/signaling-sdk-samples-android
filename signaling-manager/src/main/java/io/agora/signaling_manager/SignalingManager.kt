@@ -8,7 +8,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-
 open class SignalingManager(context: Context) {
     protected val mContext: Context
 
