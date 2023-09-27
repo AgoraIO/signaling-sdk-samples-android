@@ -172,7 +172,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
             messageList.addView(messageTextView, params)
         }
     }
-    
+
     fun updateUserList(userList: List<String>?) {
         val iconsToRemove = mutableListOf<String>()
 
