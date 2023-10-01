@@ -2,7 +2,7 @@
   "uid": "1",
   "appId": "17cb7ec4e5d845498de0f75eeac4273a",
   "channelName": "demo",
-  "token": "007eJxSYPCq+Cf/JnRWy8JDa9ayFCkx/1ZcylnAaXMocdFhx/zTEuEKDIbmyUnmqckmqaYpFiamJpYWKakGaeamqamJySZG5saJ9/8JpRZoMTIsX87FxMjAxMDIwMgA4jMyGAICAAD//35iHRA=",
+  "token": "007eJxSYJjT12htFW4wOcD+Xn7Znk8Su9SjS+LlJVN++5jPvvw6Q0qBwdA8Ock8Ndkk1TTFwsTUxNIiJdUgzdw0NTUx2cTI3Dhx5xLJ1AItRoaJXFJMjAxMDIwMjAwgPiODISAAAP//Rm4bxA==",
   "proxyUrl": "http://localhost:8080/",
   "serverUrl": "https://agora-token-server-5rci.onrender.com",
   "tokenExpiryTime": "600",

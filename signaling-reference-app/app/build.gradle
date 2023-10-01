@@ -34,7 +34,7 @@ android {
 
 dependencies {
     //implementation files('libs/agora-rtm-sdk.jar')
-    implementation 'io.agora:agora-rtm:2.1.6'
+    implementation 'io.agora:agora-rtm:${project.signalingSDKVersion}'
     implementation project(':signaling-manager')
     // implementation project(':authentication-workflow')
 
