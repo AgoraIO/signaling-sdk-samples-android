@@ -55,7 +55,7 @@ open class SignalingManager(context: Context) {
         return null
     }
 
-    private val eventListener: RtmEventListener = object : RtmEventListener {
+    protected open val eventListener: RtmEventListener = object : RtmEventListener {
         override fun onMessageEvent(eventArgs: MessageEvent) {
             // Your Message Event handler
             mListener?.onSignalingEvent("Message", eventArgs)
@@ -111,11 +111,15 @@ open class SignalingManager(context: Context) {
     }
 
     fun login(uid: Int): Int {
+        // Use the token from the config file
+        val token = config!!.optString("token")
+        return login(uid, token)
+    }
+
+    fun login(uid: Int, token: String): Int {
         if (signalingEngine ==  null ) {
             setupSignalingEngine(uid)
         }
-        // Use channelName and token from the config file
-        val token = config!!.optString("token")
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {

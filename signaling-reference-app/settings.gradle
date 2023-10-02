@@ -15,6 +15,6 @@ dependencyResolutionManagement {
 rootProject.name = "signaling-reference-app"
 
 include ':app'
-include ':signaling-manager'
+include ':signaling-manager', ':authentication-workflow'
 project(':signaling-manager').projectDir = new File(rootProject.projectDir, '../signaling-manager')
-// project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
+project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
