@@ -29,8 +29,7 @@ open class SignalingManager(context: Context) {
         config = readConfig(mContext)
         appId = config!!.optString("appId")
         channelName = config!!.optString("channelName")
-        localUid = config!!.optInt("uid")
-        //activity = mContext as Activity
+        localUid = config!!.optInt("uid") // Default value
     }
 
     fun setListener(mListener: SignalingManagerListener?) {
@@ -97,7 +96,7 @@ open class SignalingManager(context: Context) {
     protected open fun setupSignalingEngine(uid: Int): Boolean {
         try {
             val rtmConfig = RtmConfig.Builder(appId, uid.toString())
-                .presenceTimeout(300)
+                .presenceTimeout(config!!.optString("presenceTimeout").toInt())
                 .useStringUserId(false)
                 .eventListener(eventListener)
                 .build()
@@ -117,9 +116,9 @@ open class SignalingManager(context: Context) {
     }
 
     fun login(uid: Int, token: String): Int {
-        if (signalingEngine ==  null ) {
+        //if (signalingEngine ==  null ) {
             setupSignalingEngine(uid)
-        }
+        //}
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -127,6 +126,7 @@ open class SignalingManager(context: Context) {
             }
 
             override fun onSuccess(responseInfo: Void?) {
+                localUid = uid
                 isLoggedIn = true
                 notify("Successfully logged in")
                 mListener?.onLoginLogout(isLoggedIn)
@@ -153,11 +153,10 @@ open class SignalingManager(context: Context) {
                     }
                     notify("Logged out successfully")
                     mListener?.onLoginLogout(isLoggedIn)
+                    // Destroy the engine instance
+                    destroySignalingEngine()
                 }
             })
-
-            // Destroy the engine instance
-            destroySignalingEngine()
         }
     }
 
@@ -231,6 +230,7 @@ open class SignalingManager(context: Context) {
     protected open fun destroySignalingEngine() {
         // Release the SignalingEngine instance to free up resources
         signalingEngine = null
+        RtmClient.release()
     }
 
     interface SignalingManagerListener {

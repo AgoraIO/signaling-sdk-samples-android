@@ -5,9 +5,7 @@ import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
 import android.content.Context
-import io.agora.rtm.ErrorInfo
-import io.agora.rtm.ResultCallback
-import io.agora.rtm.RtmEventListener
+import io.agora.rtm.*
 import io.agora.signaling_manager.SignalingManager
 import java.io.IOException
 import java.net.MalformedURLException
@@ -63,16 +61,42 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
             }
 
             // Reuse events handlers from the base class
-            /* override fun onUserJoined(uid: Int, elapsed: Int) {
-                baseEventHandler!!.onUserJoined(uid, elapsed)
+            override fun onMessageEvent(eventArgs: MessageEvent) {
+                // Your Message Event handler
+                baseEventHandler?.onMessageEvent(eventArgs)
             }
-             */
 
+            override fun onPresenceEvent(eventArgs: PresenceEvent) {
+                // Your Presence Event handler
+                baseEventHandler?.onPresenceEvent(eventArgs)
+            }
+
+            override fun onTopicEvent(eventArgs: TopicEvent) {
+                // Your Topic Event handler
+                baseEventHandler?.onTopicEvent(eventArgs)
+            }
+
+            override fun onLockEvent(eventArgs: LockEvent) {
+                // Your Lock Event handler
+                baseEventHandler?.onLockEvent(eventArgs)
+            }
+
+            override fun onStorageEvent(eventArgs: StorageEvent) {
+                // Your Storage Event handler
+                baseEventHandler?.onStorageEvent(eventArgs)
+            }
+
+            override fun onConnectionStateChanged(
+                channelName: String?,
+                state: RtmConstants.RtmConnectionState?,
+                reason: RtmConstants.RtmConnectionChangeReason?
+            ) {
+                baseEventHandler?.onConnectionStateChanged(channelName, state, reason)
+            }
         }
 
     fun fetchToken(callback: TokenCallback) {
-        // Use the uid from the config file if not specified
-        fetchToken(config!!.optInt("uid"), callback)
+        fetchToken(localUid, callback)
     }
 
     fun fetchToken(uid: Int, callback: TokenCallback) {
@@ -118,7 +142,6 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
     }
 
     fun loginWithToken(uid: Int): Int {
-        if (signalingEngine == null) setupSignalingEngine(uid)
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for uid
             fetchToken(uid, object : TokenCallback {
@@ -133,7 +156,8 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
                 }
             })
             0
-        } else { // use the token from the config.json file
+        } else { // use the uid and token from the config.json file
+            val uid = config!!.optString("uid").toInt()
             val token = config!!.optString("token")
             login(uid, token)
         }
