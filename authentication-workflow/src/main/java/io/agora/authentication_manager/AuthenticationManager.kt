@@ -5,6 +5,8 @@ import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
 import android.content.Context
+import io.agora.rtm.ErrorInfo
+import io.agora.rtm.ResultCallback
 import io.agora.rtm.RtmEventListener
 import io.agora.signaling_manager.SignalingManager
 import java.io.IOException
@@ -14,7 +16,7 @@ import java.net.URL
 open class AuthenticationManager(context: Context?) : SignalingManager(
     context!!
 ) {
-    var serverUrl : String // The base URL to your token server
+    private var serverUrl: String // The base URL to your token server
     private val tokenExpiryTime : Int // Time in seconds after which the token will expire.
     private val baseEventHandler: RtmEventListener? // To extend the event handler from the base class
 
@@ -41,8 +43,15 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
                 fetchToken(object : TokenCallback {
                     override fun onTokenReceived(token: String?) {
                         // Use the token to renew
-                        signalingEngine!!.renewToken(token)
-                        notify("Token renewed")
+                        signalingEngine!!.renewToken(token,object : ResultCallback<Void?> {
+                            override fun onFailure(errorInfo: ErrorInfo?) {
+                                notify("Failed to renew token")
+                            }
+
+                            override fun onSuccess(responseInfo: Void?) {
+                                notify("Token renewed")
+                            }
+                        })
                     }
 
                     override fun onError(errorMessage: String) {
@@ -90,7 +99,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
                         // Extract token from the response
                         val responseBody = response.body!!.string()
                         val jsonObject = JSONObject(responseBody)
-                        val token = jsonObject.getString("token")
+                        val token = jsonObject.getString("rtmToken")
                         // Return the token
                         callback.onTokenReceived(token)
                     } catch (e: JSONException) {
@@ -109,13 +118,13 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
     }
 
     fun loginWithToken(uid: Int): Int {
-        if (signalingEngine == null) setupSignalingEngine()
+        if (signalingEngine == null) setupSignalingEngine(uid)
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for uid
             fetchToken(uid, object : TokenCallback {
                 override fun onTokenReceived(token: String?) {
                     // Handle the received token
-                    login(uid, token)
+                    if (token != null) login(uid, token)
                 }
 
                 override fun onError(errorMessage: String) {

@@ -23,7 +23,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     private lateinit var btnSubscribe: Button
     private lateinit var btnLogin: Button
     private lateinit var editChannelName: EditText
-    private lateinit var editUid: EditText
+    protected lateinit var editUid: EditText
     private lateinit var editMessage: EditText
     private lateinit var userListLayout: LinearLayout
     private val userIconsMap = mutableMapOf<String, View>()
