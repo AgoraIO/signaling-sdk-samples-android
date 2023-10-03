@@ -13,7 +13,7 @@ class AuthenticationActivity : BasicImplementationActivity() {
     }
 
     override fun initializeSignalingManager() {
-        // Instantiate an object of the AuthenticationManager class, which is an extension of the AgoraManager
+        // Instantiate an object of the AuthenticationManager class, which extends SignalingManager
         authenticationManager = AuthenticationManager(this)
         signalingManager = authenticationManager
 
@@ -22,7 +22,9 @@ class AuthenticationActivity : BasicImplementationActivity() {
     }
 
     override fun login() {
+        // Read the uid from the UI
         val uid = editUid.text.toString().toInt()
+        // Login using the provided uid
         authenticationManager.loginWithToken(uid)
     }
 }

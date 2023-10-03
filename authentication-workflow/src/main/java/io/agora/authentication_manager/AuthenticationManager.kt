@@ -14,7 +14,7 @@ import java.net.URL
 open class AuthenticationManager(context: Context?) : SignalingManager(
     context!!
 ) {
-    private var serverUrl: String // The base URL to your token server
+    private val serverUrl: String // The base URL to your token server
     private val tokenExpiryTime : Int // Time in seconds after which the token will expire.
     private val baseEventHandler: RtmEventListener? // To extend the event handler from the base class
 
@@ -31,13 +31,13 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
         baseEventHandler = super.eventListener
     }
 
-    // Listen for the event that a token is about to expire
+    // Extend the eventListener from the base class
     override val eventListener: RtmEventListener
         get() = object : RtmEventListener {
             // Listen for the event that the token is about to expire
             override fun onTokenPrivilegeWillExpire(token: String) {
                 notify("Token is about to expire")
-                // Get a new token
+                // Fetch a new token
                 fetchToken(object : TokenCallback {
                     override fun onTokenReceived(token: String?) {
                         // Use the token to renew
@@ -54,7 +54,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
 
                     override fun onError(errorMessage: String) {
                         // Handle the error
-                        notify("Error: $errorMessage")
+                        notify("Error fetching token: $errorMessage")
                     }
                 })
                 super.onTokenPrivilegeWillExpire(token)
@@ -99,10 +99,9 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
         fetchToken(localUid, callback)
     }
 
-    fun fetchToken(uid: Int, callback: TokenCallback) {
+    private fun fetchToken(uid: Int, callback: TokenCallback) {
         // Prepare the Url
         val urlLString = "$serverUrl/rtm/$uid/?expiry=$tokenExpiryTime"
-
         val client = OkHttpClient()
 
         // Create a request
@@ -143,23 +142,23 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
 
     fun loginWithToken(uid: Int): Int {
         return if (isValidURL(serverUrl)) { // A valid server url is available
-            // Fetch a token from the server for uid
+            // Fetch a token from the server for the specified uid
             fetchToken(uid, object : TokenCallback {
                 override fun onTokenReceived(token: String?) {
-                    // Handle the received token
+                    // Use the received token to log in
                     if (token != null) login(uid, token)
                 }
 
                 override fun onError(errorMessage: String) {
                     // Handle the error
-                    notify("Error: $errorMessage")
+                    notify("Error fetching token: $errorMessage")
                 }
             })
             0
         } else { // use the uid and token from the config.json file
-            val uid = config!!.optString("uid").toInt()
+            val defaultUid = config!!.optString("uid").toInt()
             val token = config!!.optString("token")
-            login(uid, token)
+            login(defaultUid, token)
         }
     }
 

@@ -9,14 +9,14 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 open class SignalingManager(context: Context) {
-    protected val mContext: Context
+    private val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
     protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
-    protected val appId: String // Your App ID from Agora console
+    private val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
-    var channelType = RtmConstants.RtmChannelType.MESSAGE
+    private var channelType = RtmConstants.RtmChannelType.MESSAGE
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
@@ -116,9 +116,9 @@ open class SignalingManager(context: Context) {
     }
 
     fun login(uid: Int, token: String): Int {
-        //if (signalingEngine ==  null ) {
+        if (signalingEngine ==  null ) {
             setupSignalingEngine(uid)
-        //}
+        }
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
