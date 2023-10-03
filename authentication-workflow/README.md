@@ -9,7 +9,7 @@ This example shows you how to retrieve a token from an authentication server and
 For context on this implementation and a full explanation of the essential code snippets used in this example, read the [Secure authentication with tokens](https://docs-staging-git-milestone-22-signalling-211-agora-gdxe.vercel.app/en/signaling/get-started/authentication-workflow?platform=web) document. 
 To quickly deploy a token server, see [Create and run a token server](https://docs-staging-git-milestone-22-signalling-211-agora-gdxe.vercel.app/en/signaling/get-started/authentication-workflow?platform=web#create-and-run-a-token-server). You use your token server URL for user authentication in this example.
 
-For the UI implementation of this example, refer to [`AuthenticationActivity.kt`](../android-reference-app/app/src/main/java/io/agora/signaling_reference_app/AuthenticationActivity.kt).
+For the UI implementation of this example, refer to [`AuthenticationActivity.kt`](signaling-reference-app/app/src/main/java/io/agora/signaling_reference_app/AuthenticationActivity.kt).
 
 ## How to run this example
 
