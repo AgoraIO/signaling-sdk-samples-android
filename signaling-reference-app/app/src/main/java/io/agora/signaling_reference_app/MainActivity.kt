@@ -50,9 +50,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchActivity(activityClass: Class<*>) {
-        // Launch the corresponding activity when an item is clicked
+        // Launch the corresponding activity when an example is selected
         val intent = Intent(applicationContext, activityClass)
-        //intent.putExtra("selectedProduct", selectedProduct.ordinal)
         startActivity(intent)
     }
 }

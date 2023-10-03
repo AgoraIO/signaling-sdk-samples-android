@@ -9,14 +9,14 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 open class SignalingManager(context: Context) {
-    protected val mContext: Context
+    private val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
     protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
-    protected val appId: String // Your App ID from Agora console
+    private val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
-    var channelType = RtmConstants.RtmChannelType.MESSAGE
+    private var channelType = RtmConstants.RtmChannelType.MESSAGE
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
@@ -29,8 +29,7 @@ open class SignalingManager(context: Context) {
         config = readConfig(mContext)
         appId = config!!.optString("appId")
         channelName = config!!.optString("channelName")
-        localUid = config!!.optInt("uid")
-        //activity = mContext as Activity
+        localUid = config!!.optInt("uid") // Default value
     }
 
     fun setListener(mListener: SignalingManagerListener?) {
@@ -55,7 +54,7 @@ open class SignalingManager(context: Context) {
         return null
     }
 
-    private val eventListener: RtmEventListener = object : RtmEventListener {
+    protected open val eventListener: RtmEventListener = object : RtmEventListener {
         override fun onMessageEvent(eventArgs: MessageEvent) {
             // Your Message Event handler
             mListener?.onSignalingEvent("Message", eventArgs)
@@ -97,7 +96,7 @@ open class SignalingManager(context: Context) {
     protected open fun setupSignalingEngine(uid: Int): Boolean {
         try {
             val rtmConfig = RtmConfig.Builder(appId, uid.toString())
-                .presenceTimeout(300)
+                .presenceTimeout(config!!.optString("presenceTimeout").toInt())
                 .useStringUserId(false)
                 .eventListener(eventListener)
                 .build()
@@ -111,11 +110,15 @@ open class SignalingManager(context: Context) {
     }
 
     fun login(uid: Int): Int {
+        // Use the token from the config file
+        val token = config!!.optString("token")
+        return login(uid, token)
+    }
+
+    fun login(uid: Int, token: String): Int {
         if (signalingEngine ==  null ) {
             setupSignalingEngine(uid)
         }
-        // Use channelName and token from the config file
-        val token = config!!.optString("token")
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -123,6 +126,7 @@ open class SignalingManager(context: Context) {
             }
 
             override fun onSuccess(responseInfo: Void?) {
+                localUid = uid
                 isLoggedIn = true
                 notify("Successfully logged in")
                 mListener?.onLoginLogout(isLoggedIn)
@@ -149,11 +153,10 @@ open class SignalingManager(context: Context) {
                     }
                     notify("Logged out successfully")
                     mListener?.onLoginLogout(isLoggedIn)
+                    // Destroy the engine instance
+                    destroySignalingEngine()
                 }
             })
-
-            // Destroy the engine instance
-            destroySignalingEngine()
         }
     }
 
@@ -227,6 +230,7 @@ open class SignalingManager(context: Context) {
     protected open fun destroySignalingEngine() {
         // Release the SignalingEngine instance to free up resources
         signalingEngine = null
+        RtmClient.release()
     }
 
     interface SignalingManagerListener {

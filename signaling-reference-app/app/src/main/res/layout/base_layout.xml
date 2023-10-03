@@ -25,7 +25,8 @@
         android:padding="5dp"
         android:background="#FFFFFF"
         android:hint="@string/uid_hint"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:enabled="false"/>
 
     <Button
         android:id="@+id/btnSubscribe"
