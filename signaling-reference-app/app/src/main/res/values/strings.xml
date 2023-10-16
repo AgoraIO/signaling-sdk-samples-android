@@ -12,4 +12,5 @@
     <string name="message">Message</string>
     <string name="send"><![CDATA[>>]]></string>
     <string name="presence">Presence:</string>
+    <string name="topic_name_hint">Topic name here</string>
 </resources>

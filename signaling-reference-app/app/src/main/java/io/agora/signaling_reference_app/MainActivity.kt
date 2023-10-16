@@ -1,7 +1,5 @@
 package io.agora.signaling_reference_app
 
-//import io.agora.agora_manager.AgoraManager
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             ListItem("Secure authentication with tokens", ListItem.ExampleId.AUTHENTICATION_WORKFLOW),
 
             ListItem("CORE FUNCTIONALITY", ListItem.ExampleId.HEADER),
-            ListItem("Stream channels", ListItem.ExampleId.STREAM_CHANNELS),
+            ListItem("Stream channels", ListItem.ExampleId.STREAM_CHANNEL),
             ListItem("Store channel and user data", ListItem.ExampleId.STORE_DATA),
             ListItem("Connect through restricted networks with cloud proxy", ListItem.ExampleId.CLOUD_PROXY),
             ListItem("Data encryption", ListItem.ExampleId.DATA_ENCRYPTION),
@@ -41,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                 when (item.id) {
                     ListItem.ExampleId.SDK_QUICKSTART -> launchActivity(BasicImplementationActivity::class.java)
                     ListItem.ExampleId.AUTHENTICATION_WORKFLOW -> launchActivity(AuthenticationActivity::class.java)
+                    ListItem.ExampleId.STREAM_CHANNEL -> launchActivity(StreamChannelActivity::class.java)
                     else -> {}
                 }
             }
