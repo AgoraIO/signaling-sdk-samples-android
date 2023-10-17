@@ -31,7 +31,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
     
     // The overridable UI layout for this activity
     protected open val layoutResourceId: Int
-        get() = R.layout.base_layout // Default layout resource ID for base activity
+        get() = R.layout.activity_basic_implementation // Default layout resource ID for base activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

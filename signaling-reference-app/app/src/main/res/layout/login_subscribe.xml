@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingHorizontal="3dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ECE5DD">
+
+        <EditText
+            android:id="@+id/editUid"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:layout_marginTop="2dp"
+            android:background="#FFFFFF"
+            android:hint="@string/uid_hint"
+            android:inputType="number"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:onClick="loginLogout"
+            android:layout_marginStart="5dp"
+            android:text="@string/login"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ECE5DD">
+
+        <EditText
+            android:id="@+id/editChannelName"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:layout_marginTop="2dp"
+            android:background="#FFFFFF"
+            android:hint="@string/channel_name_hint"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnSubscribe"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:onClick="subscribeUnsubscribe"
+            android:layout_marginStart="5dp"
+            android:text="@string/subscribe" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

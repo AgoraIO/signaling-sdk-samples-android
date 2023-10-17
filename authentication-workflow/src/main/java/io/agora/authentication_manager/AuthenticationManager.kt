@@ -5,6 +5,7 @@ import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
 import android.content.Context
+import android.media.session.MediaSession.Token
 import io.agora.rtm.*
 import io.agora.signaling_manager.SignalingManager
 import java.io.IOException
@@ -96,17 +97,28 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
         }
 
     fun fetchToken(callback: TokenCallback) {
-        fetchToken(localUid, callback)
+        fetchRTMToken(localUid, callback)
     }
 
-    private fun fetchToken(uid: Int, callback: TokenCallback) {
+    fun fetchRTCToken(channelName: String, role: Int, callback: TokenCallback) {
+        // Fetches the RTC token for stream channels
+        val urlString = "$serverUrl/rtc/$channelName/$role/uid/$localUid/?expiry=$tokenExpiryTime"
+        fetchToken(urlString, callback)
+    }
+
+    private fun fetchRTMToken(uid: Int, callback: TokenCallback) {
         // Prepare the Url
-        val urlLString = "$serverUrl/rtm/$uid/?expiry=$tokenExpiryTime"
+        val urlString = "$serverUrl/rtm/$uid/?expiry=$tokenExpiryTime"
+        fetchToken(urlString, callback)
+    }
+
+    private fun fetchToken(urlString: String, callback: TokenCallback) {
+        // Prepare the Url
         val client = OkHttpClient()
 
         // Create a request
         val request: Request = Builder()
-            .url(urlLString)
+            .url(urlString)
             .header("Content-Type", "application/json; charset=UTF-8")
             .get()
             .build()
@@ -122,7 +134,13 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
                         // Extract token from the response
                         val responseBody = response.body!!.string()
                         val jsonObject = JSONObject(responseBody)
-                        val token = jsonObject.getString("rtmToken")
+                        val token = if (urlString.contains("/rtm/")) {
+                            // Message channel token
+                            jsonObject.getString("rtmToken")
+                        } else {
+                            // Stream channel token
+                            jsonObject.getString("rtcToken")
+                        }
                         // Return the token
                         callback.onTokenReceived(token)
                     } catch (e: JSONException) {
@@ -143,7 +161,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
     fun loginWithToken(uid: Int): Int {
         return if (isValidURL(serverUrl)) { // A valid server url is available
             // Fetch a token from the server for the specified uid
-            fetchToken(uid, object : TokenCallback {
+            fetchRTMToken(uid, object : TokenCallback {
                 override fun onTokenReceived(token: String?) {
                     // Use the received token to log in
                     if (token != null) login(uid, token)
