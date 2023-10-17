@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:padding="6dp"
+    android:background="#ECE5DD"
+    tools:context=".StreamChannelActivity">
 
     <include
         android:id="@+id/panel"
@@ -11,11 +13,42 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"/>
 
+    <LinearLayout
+        android:id="@+id/topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/panel"
+        android:background="#ECE5DD">
+
+        <EditText
+            android:id="@+id/editTopicName"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:padding="7dp"
+            android:layout_marginTop="2dp"
+            android:background="#FFFFFF"
+            android:hint="@string/enter_topic_name"
+            android:inputType="number"
+            android:enabled="false"/>
+
+        <Button
+            android:id="@+id/btnJoinTopic"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content"
+            android:onClick="joinLeaveTopic"
+            android:layout_marginStart="5dp"
+            android:text="@string/join_topic"/>
+
+    </LinearLayout>
+
     <include
         android:id="@+id/base_layout"
         layout="@layout/base_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/panel"/>
+        android:layout_below="@id/topic"/>
 
 </RelativeLayout>

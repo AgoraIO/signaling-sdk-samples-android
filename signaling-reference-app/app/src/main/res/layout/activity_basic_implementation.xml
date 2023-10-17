@@ -3,19 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:padding="6dp"
+    android:background="#ECE5DD"
+    tools:context=".BasicImplementationActivity">
 
-        <include
-            android:id="@+id/panel"
-            layout="@layout/login_subscribe"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
+    <include
+        android:id="@+id/panel"
+        layout="@layout/login_subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <include
-            android:id="@+id/base_layout"
-            layout="@layout/base_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/panel"/>
+    <include
+        android:id="@+id/base_layout"
+        layout="@layout/base_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/panel" />
 
 </RelativeLayout>

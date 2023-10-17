@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     android:orientation="vertical"
     android:background="#ECE5DD">
 
@@ -58,7 +57,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="#FFFFFF"
             android:hint="@string/message"
             android:padding="5dp"
@@ -68,7 +66,6 @@
             android:id="@+id/btnPublish"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:paddingBottom="9dp"
             android:onClick="publishMessage"
             android:text="@string/send" />
 

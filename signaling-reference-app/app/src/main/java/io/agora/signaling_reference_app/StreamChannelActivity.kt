@@ -1,6 +1,7 @@
 package io.agora.signaling_reference_app
 
 import android.os.Bundle
+import android.view.View
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.StreamChannel
 import io.agora.stream_channel_manager.StreamChannelManager
@@ -32,4 +33,6 @@ class StreamChannelActivity : BasicImplementationActivity() {
         // Login using the provided uid
         streamChannelManager.loginWithToken(uid)
     }
+
+    fun joinLeaveTopic(view: View) {}
 }

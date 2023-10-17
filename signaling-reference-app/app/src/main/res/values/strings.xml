@@ -13,4 +13,6 @@
     <string name="send"><![CDATA[>>]]></string>
     <string name="presence">Presence:</string>
     <string name="topic_name_hint">Topic name here</string>
+    <string name="join_topic">Join Topic</string>
+    <string name="enter_topic_name">Enter topic name</string>
 </resources>
