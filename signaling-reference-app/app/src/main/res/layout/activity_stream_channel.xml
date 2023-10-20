@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="6dp"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="6dp"
     android:background="#ECE5DD"
     tools:context=".StreamChannelActivity">
 
@@ -30,16 +30,18 @@
             android:layout_marginTop="2dp"
             android:background="#FFFFFF"
             android:hint="@string/enter_topic_name"
+            android:autofillHints=""
             android:inputType="number"
             android:enabled="false"/>
 
         <Button
-            android:id="@+id/btnJoinTopic"
+            android:id="@+id/btnTopic"
             android:layout_width="0dp"
             android:layout_weight="5"
             android:layout_height="wrap_content"
             android:onClick="joinLeaveTopic"
             android:layout_marginStart="5dp"
+            android:enabled="false"
             android:text="@string/join_topic"/>
 
     </LinearLayout>

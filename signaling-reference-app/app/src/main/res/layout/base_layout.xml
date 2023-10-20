@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
             android:hint="@string/message"
-            android:padding="5dp"
+            android:padding="6dp"
             android:inputType="text" />
 
         <Button
@@ -67,6 +67,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:onClick="publishMessage"
+            android:layout_marginStart="6dp"
             android:text="@string/send" />
 
     </LinearLayout>

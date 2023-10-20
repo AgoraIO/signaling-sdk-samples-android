@@ -20,9 +20,9 @@ import org.json.JSONObject
 
 open class BasicImplementationActivity : AppCompatActivity() {
     protected lateinit var signalingManager: SignalingManager
-    private lateinit var btnSubscribe: Button
+    lateinit var btnSubscribe: Button
     private lateinit var btnLogin: Button
-    private lateinit var editChannelName: EditText
+    lateinit var editChannelName: EditText
     protected lateinit var editUid: EditText
     private lateinit var editMessage: EditText
     private lateinit var userListLayout: LinearLayout

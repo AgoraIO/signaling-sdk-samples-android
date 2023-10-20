@@ -3,7 +3,7 @@ package io.agora.signaling_reference_app
 import android.os.Bundle
 import io.agora.authentication_manager.AuthenticationManager
 
-class AuthenticationActivity : BasicImplementationActivity() {
+open class AuthenticationActivity : BasicImplementationActivity() {
     private lateinit var authenticationManager: AuthenticationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
