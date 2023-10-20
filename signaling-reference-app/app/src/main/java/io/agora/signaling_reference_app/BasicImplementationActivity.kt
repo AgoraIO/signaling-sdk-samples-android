@@ -24,9 +24,9 @@ open class BasicImplementationActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     lateinit var editChannelName: EditText
     protected lateinit var editUid: EditText
-    private lateinit var editMessage: EditText
-    private lateinit var userListLayout: LinearLayout
-    private val userIconsMap = mutableMapOf<String, View>()
+    lateinit var editMessage: EditText
+    protected lateinit var userListLayout: LinearLayout
+    protected val userIconsMap = mutableMapOf<String, View>()
     var channelName = ""
     
     // The overridable UI layout for this activity
@@ -61,8 +61,12 @@ open class BasicImplementationActivity : AppCompatActivity() {
         signalingManager.setListener(signalingManagerListener)
     }
 
-    fun publishMessage(view: View) {
+    fun btnSendClick(view: View) {
         val message = editMessage.text.toString()
+        publishMessage(message)
+    }
+
+    open fun publishMessage(message: String) {
         val result = signalingManager.publishChannelMessage(message)
         if (result == 0) {
             displaySentMessage(message)
@@ -100,7 +104,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
         }
     }
 
-    fun subscribeUnsubscribe(view: View) {
+    open fun subscribeUnsubscribe(view: View) {
         // Subscribe/Unsubscribe button clicked
          if (!signalingManager.isSubscribed) {
             subscribe()
@@ -269,15 +273,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
             }
 
             override fun onSubscribeUnsubscribe(subscribed: Boolean) {
-                runOnUiThread {
-                    if (subscribed) {
-                        btnSubscribe.setText(R.string.unsubscribe)
-                    } else {
-                        btnSubscribe.setText(R.string.subscribe)
-                        userListLayout.removeAllViews()
-                        userIconsMap.clear()
-                    }
-                }
+                handleSubscribeUnsubscribe(subscribed)
             }
 
             override fun onLoginLogout(loggedIn: Boolean) {
@@ -296,4 +292,16 @@ open class BasicImplementationActivity : AppCompatActivity() {
                 updateUserList(userList)
             }
         }
+
+    open fun handleSubscribeUnsubscribe(subscribed: Boolean) {
+        runOnUiThread {
+            if (subscribed) {
+                btnSubscribe.setText(R.string.unsubscribe)
+            } else {
+                btnSubscribe.setText(R.string.subscribe)
+                userListLayout.removeAllViews()
+                userIconsMap.clear()
+            }
+        }
+    }
 }

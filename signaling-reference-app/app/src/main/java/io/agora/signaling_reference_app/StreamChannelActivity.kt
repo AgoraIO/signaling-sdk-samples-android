@@ -3,6 +3,7 @@ package io.agora.signaling_reference_app
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.StreamChannel
 import io.agora.stream_channel_manager.StreamChannelManager
@@ -10,6 +11,7 @@ import io.agora.stream_channel_manager.StreamChannelManager
 class StreamChannelActivity : AuthenticationActivity() {
     private lateinit var streamChannelManager: StreamChannelManager
     private lateinit var btnTopic: Button
+    private lateinit var editTopicName: EditText
 
     override val layoutResourceId: Int
         get() = R.layout.activity_stream_channel
@@ -19,7 +21,17 @@ class StreamChannelActivity : AuthenticationActivity() {
         // Enable the user to login with a custom uid
         editUid.isEnabled = true
         btnTopic = findViewById(R.id.btnTopic)
-        btnSubscribe.setText("Join Stream channel")
+        btnSubscribe.setText(R.string.join_stream_channel)
+        editTopicName = findViewById(R.id.editTopicName)
+    }
+
+    override fun subscribeUnsubscribe(view: View) {
+        // Subscribe/Unsubscribe button clicked
+        if (!streamChannelManager.isStreamChannelJoined) {
+            subscribe()
+        } else {
+            unsubscribe()
+        }
     }
 
     override fun initializeSignalingManager() {
@@ -40,6 +52,20 @@ class StreamChannelActivity : AuthenticationActivity() {
         streamChannelManager.leaveStreamChannel(channelName)
     }
 
+    override fun handleSubscribeUnsubscribe(subscribed: Boolean) {
+        runOnUiThread {
+            if (subscribed) {
+                btnSubscribe.setText(R.string.leave_stream_channel)
+                btnTopic.isEnabled = true
+            } else {
+                btnSubscribe.setText(R.string.join_stream_channel)
+                btnTopic.isEnabled = false
+                userListLayout.removeAllViews()
+                userIconsMap.clear()
+            }
+        }
+    }
+
     override fun login() {
         // Read the uid from the UI
         val uid = editUid.text.toString().toInt()
@@ -47,7 +73,20 @@ class StreamChannelActivity : AuthenticationActivity() {
         streamChannelManager.loginWithToken(uid)
     }
 
+    override fun publishMessage(message: String) {
+        val result = streamChannelManager.publishTopicMessage(streamChannelManager.joinedTopicName, message)
+        if (result == 0) {
+            displaySentMessage(message)
+            editMessage.setText("")
+        }
+    }
+
     fun joinLeaveTopic(view: View) {
 
+        if (!streamChannelManager.isTopicJoined) {
+            streamChannelManager.joinTopic(editTopicName.text.toString())
+        } else {
+            streamChannelManager.leaveTopic(streamChannelManager.joinedTopicName)
+        }
     }
 }
