@@ -5,7 +5,6 @@ import okhttp3.Request.*
 import org.json.JSONObject
 import org.json.JSONException
 import android.content.Context
-import android.media.session.MediaSession.Token
 import io.agora.rtm.*
 import io.agora.signaling_manager.SignalingManager
 import java.io.IOException
@@ -17,7 +16,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
 ) {
     private val serverUrl: String // The base URL to your token server
     private val tokenExpiryTime : Int // Time in seconds after which the token will expire.
-    private val baseEventHandler: RtmEventListener? // To extend the event handler from the base class
+    protected val baseEventHandler: RtmEventListener? // To extend the event handler from the base class
 
     // Callback interface to receive the http response from an async token request
     interface TokenCallback {
@@ -37,27 +36,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
         get() = object : RtmEventListener {
             // Listen for the event that the token is about to expire
             override fun onTokenPrivilegeWillExpire(token: String) {
-                notify("Token is about to expire")
-                // Fetch a new token
-                fetchToken(object : TokenCallback {
-                    override fun onTokenReceived(token: String?) {
-                        // Use the token to renew
-                        signalingEngine!!.renewToken(token,object : ResultCallback<Void?> {
-                            override fun onFailure(errorInfo: ErrorInfo?) {
-                                notify("Failed to renew token")
-                            }
-
-                            override fun onSuccess(responseInfo: Void?) {
-                                notify("Token renewed")
-                            }
-                        })
-                    }
-
-                    override fun onError(errorMessage: String) {
-                        // Handle the error
-                        notify("Error fetching token: $errorMessage")
-                    }
-                })
+                handleTokenExpiry()
                 super.onTokenPrivilegeWillExpire(token)
             }
 
@@ -96,7 +75,31 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
             }
         }
 
-    fun fetchToken(callback: TokenCallback) {
+    protected fun handleTokenExpiry() {
+        notify("Token is about to expire")
+        // Fetch a new token
+        fetchToken(object : TokenCallback {
+            override fun onTokenReceived(token: String?) {
+                // Use the token to renew authentication
+                signalingEngine!!.renewToken(token,object : ResultCallback<Void?> {
+                    override fun onFailure(errorInfo: ErrorInfo?) {
+                        notify("Failed to renew token")
+                    }
+
+                    override fun onSuccess(responseInfo: Void?) {
+                        notify("Token renewed")
+                    }
+                })
+            }
+
+            override fun onError(errorMessage: String) {
+                // Handle the error
+                notify("Error fetching token: $errorMessage")
+            }
+        })
+    }
+
+    private fun fetchToken(callback: TokenCallback) {
         fetchRTMToken(localUid, callback)
     }
 

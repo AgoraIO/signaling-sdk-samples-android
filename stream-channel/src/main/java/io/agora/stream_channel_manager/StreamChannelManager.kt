@@ -16,7 +16,7 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
                 // Use the received token to log in
                 if (token != null) {
                     streamChannel = signalingEngine!!.createStreamChannel(channelName)
-                    streamChannel?.join(
+                    streamChannel.join(
                         JoinChannelOptions(token, true, true, true),
                         object : ResultCallback<Void?> {
                             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -26,7 +26,7 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
 
                             override fun onSuccess(responseInfo: Void?) {
                                 isStreamChannelJoined = true
-                                mListener?.onSubscribeUnsubscribe(isStreamChannelJoined)
+                                mListener?.onSubscribeUnsubscribe(true)
                                 notify("Joined stream channel: $channelName")
                             }
                         })
@@ -49,7 +49,7 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
 
             override fun onSuccess(responseInfo: Void?) {
                 isStreamChannelJoined = false
-                mListener?.onSubscribeUnsubscribe(isStreamChannelJoined)
+                mListener?.onSubscribeUnsubscribe(false)
                 notify("Left stream channel: $channelName")
             }
         })
@@ -72,9 +72,10 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
     }
 
     fun subscribeTopic(topicName: String) {
-        streamChannel.subscribeTopic(topicName,TopicOptions(), object : ResultCallback<SubscribeTopicResult?> {
+
+        streamChannel.subscribeTopic(topicName,  TopicOptions(), object : ResultCallback<SubscribeTopicResult?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("Failed to subscribed topic: $topicName")
+                notify("Failed to subscribe to topic: $topicName")
             }
 
             override fun onSuccess(responseInfo: SubscribeTopicResult?) {
@@ -104,10 +105,49 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
             }
 
             override fun onSuccess(responseInfo: Void?) {
-                notify("Message sent to stream channel")
+                notify("Message sent to stream channel: $channelName, topic: $topicName")
             }
         })
         return 0
     }
-    
+
+    // Extend the eventListener from the base class
+    override val eventListener: RtmEventListener
+        get() = object : RtmEventListener {
+            // Listen for the event that the token is about to expire
+            override fun onTokenPrivilegeWillExpire(token: String) {
+                handleTokenExpiry()
+                super.onTokenPrivilegeWillExpire(token)
+            }
+
+            // Reuse events handlers from the base class
+            override fun onMessageEvent(eventArgs: MessageEvent) {
+                baseEventHandler?.onMessageEvent(eventArgs)
+            }
+
+            override fun onPresenceEvent(eventArgs: PresenceEvent) {
+                baseEventHandler?.onPresenceEvent(eventArgs)
+            }
+
+            override fun onTopicEvent(eventArgs: TopicEvent) {
+                notify("Topic event: ${eventArgs.type}")
+                baseEventHandler?.onTopicEvent(eventArgs)
+            }
+
+            override fun onLockEvent(eventArgs: LockEvent) {
+                baseEventHandler?.onLockEvent(eventArgs)
+            }
+
+            override fun onStorageEvent(eventArgs: StorageEvent) {
+                baseEventHandler?.onStorageEvent(eventArgs)
+            }
+
+            override fun onConnectionStateChanged(
+                channelName: String?,
+                state: RtmConstants.RtmConnectionState?,
+                reason: RtmConstants.RtmConnectionChangeReason?
+            ) {
+                baseEventHandler?.onConnectionStateChanged(channelName, state, reason)
+            }
+        }
 }

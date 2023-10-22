@@ -13,7 +13,8 @@
     <string name="send"><![CDATA[>>]]></string>
     <string name="presence">Presence:</string>
     <string name="topic_name_hint">Topic name here</string>
-    <string name="join_topic">Join Topic</string>
+    <string name="join_topic">Join topic</string>
+    <string name="leave_topic">Leave topic</string>
     <string name="enter_topic_name">Enter topic name</string>
     <string name="join_stream_channel">Join stream channel</string>
     <string name="leave_stream_channel">Leave stream channel</string>

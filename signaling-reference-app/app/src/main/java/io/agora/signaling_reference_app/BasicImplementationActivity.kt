@@ -232,7 +232,7 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
     protected val signalingManagerListener: SignalingManager.SignalingManagerListener
         get() = object : SignalingManager.SignalingManagerListener {
-            override fun onMessageReceived(message: String?) {
+            override fun onNotification(message: String?) {
                 showMessage(message)
             }
 

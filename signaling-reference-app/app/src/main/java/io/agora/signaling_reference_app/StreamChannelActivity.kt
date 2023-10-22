@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import io.agora.authentication_manager.AuthenticationManager
-import io.agora.rtm.StreamChannel
 import io.agora.stream_channel_manager.StreamChannelManager
 
 class StreamChannelActivity : AuthenticationActivity() {
@@ -85,8 +83,10 @@ class StreamChannelActivity : AuthenticationActivity() {
 
         if (!streamChannelManager.isTopicJoined) {
             streamChannelManager.joinTopic(editTopicName.text.toString())
+            btnTopic.setText(R.string.leave_topic)
         } else {
             streamChannelManager.leaveTopic(streamChannelManager.joinedTopicName)
+            btnTopic.setText(R.string.join_topic)
         }
     }
 }
