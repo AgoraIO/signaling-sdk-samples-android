@@ -48,6 +48,7 @@ class StreamChannelActivity : AuthenticationActivity() {
 
     override fun unsubscribe() {
         streamChannelManager.leaveStreamChannel(channelName)
+        btnTopic.setText(R.string.join_topic)
     }
 
     override fun handleSubscribeUnsubscribe(subscribed: Boolean) {
@@ -58,6 +59,7 @@ class StreamChannelActivity : AuthenticationActivity() {
             } else {
                 btnSubscribe.setText(R.string.join_stream_channel)
                 btnTopic.isEnabled = false
+                btnTopic.setText(R.string.join_topic)
                 userListLayout.removeAllViews()
                 userIconsMap.clear()
             }

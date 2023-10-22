@@ -20,9 +20,9 @@ open class SignalingManager(context: Context) {
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
-        private set
+        protected set
     var isSubscribed = false // Channel subscription status
-        private set
+        protected set
 
     init {
         mContext = context
@@ -138,9 +138,9 @@ open class SignalingManager(context: Context) {
         return 0
     }
 
-    fun logout() {
+    open fun logout() {
         if (!isLoggedIn) {
-            notify("Join a channel first")
+            notify("You need to login first")
         } else {
             // To leave a channel, call the `leaveChannel` method
             signalingEngine?.logout(object: ResultCallback<Void?> {

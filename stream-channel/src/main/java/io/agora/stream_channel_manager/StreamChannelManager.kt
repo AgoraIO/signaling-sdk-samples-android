@@ -49,6 +49,8 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
 
             override fun onSuccess(responseInfo: Void?) {
                 isStreamChannelJoined = false
+                isTopicJoined =false
+                joinedTopicName = ""
                 mListener?.onSubscribeUnsubscribe(false)
                 notify("Left stream channel: $channelName")
             }
@@ -60,6 +62,7 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
         streamChannel.joinTopic(topicName, JoinTopicOptions(), object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
                 notify("Failed to join topic: $topicName")
+                isTopicJoined = false
             }
 
             override fun onSuccess(responseInfo: Void?) {
@@ -109,6 +112,31 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
             }
         })
         return 0
+    }
+
+    override fun logout() {
+        if (!isLoggedIn) {
+            notify("You need to login first")
+        } else {
+            // Leave the joined topic
+            if (isTopicJoined) leaveTopic(joinedTopicName)
+            // Leave the channel
+            if (isStreamChannelJoined) leaveStreamChannel(channelName)
+            // logout
+            signalingEngine?.logout(object: ResultCallback<Void?> {
+                override fun onFailure(errorInfo: ErrorInfo?) {
+                    notify("Logout failed:\n"+ errorInfo.toString())
+                }
+
+                override fun onSuccess(responseInfo: Void?) {
+                    isLoggedIn = false
+                    notify("Logged out successfully")
+                    mListener?.onLoginLogout(isLoggedIn)
+                    // Destroy the engine instance
+                    destroySignalingEngine()
+                }
+            })
+        }
     }
 
     // Extend the eventListener from the base class
