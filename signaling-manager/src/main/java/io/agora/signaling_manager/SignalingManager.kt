@@ -14,7 +14,7 @@ open class SignalingManager(context: Context) {
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
     protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
-    private val appId: String // Your App ID from Agora console
+    protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
     private var channelType = RtmConstants.RtmChannelType.MESSAGE
 

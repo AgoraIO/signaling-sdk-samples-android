@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.SDK_QUICKSTART -> launchActivity(BasicImplementationActivity::class.java)
                     ListItem.ExampleId.AUTHENTICATION_WORKFLOW -> launchActivity(AuthenticationActivity::class.java)
                     ListItem.ExampleId.STREAM_CHANNEL -> launchActivity(StreamChannelActivity::class.java)
+                    ListItem.ExampleId.CLOUD_PROXY -> launchActivity(CloudProxyActivity::class.java)
                     else -> {}
                 }
             }

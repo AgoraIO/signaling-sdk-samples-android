@@ -15,7 +15,8 @@ dependencyResolutionManagement {
 rootProject.name = "signaling-reference-app"
 
 include ':app'
-include ':signaling-manager', ':authentication-workflow', ':stream-channel'
+include ':signaling-manager', ':authentication-workflow', ':stream-channel', ':cloud-proxy'
 project(':signaling-manager').projectDir = new File(rootProject.projectDir, '../signaling-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
 project(':stream-channel').projectDir = new File(rootProject.projectDir, '../stream-channel')
+project(':cloud-proxy').projectDir = new File(rootProject.projectDir, '../cloud-proxy')
