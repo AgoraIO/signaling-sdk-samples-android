@@ -3,18 +3,17 @@ package io.agora.cloud_proxy_manager
 import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.*
+import io.agora.rtm.RtmConstants.RtmEncryptionMode
 import java.util.Base64
 
 open class DataEncryptionManager(context: Context?) : AuthenticationManager(context!!) {
-    val encryptionKey = config!!.getString("cipherKey")
-    val encryptionSalt = config!!.getString("salt")
 
     private fun toByteArray(base64String: String): ByteArray? {
         // Decode the Base64 string to a ByteArray
         return Base64.getDecoder().decode(base64String)
     }
 
-    fun toAscii(hexString: String): String {
+    private fun toAscii(hexString: String): String {
         val output = StringBuilder()
         var i = 0
         while (i < hexString.length) {
@@ -27,9 +26,13 @@ open class DataEncryptionManager(context: Context?) : AuthenticationManager(cont
     }
 
     override fun setupSignalingEngine(uid: Int): Boolean {
+        val encryptionMode: RtmEncryptionMode = RtmEncryptionMode.values().get(config!!.getInt("encryptionMode"))
+        val encryptionKey = config!!.getString("cipherKey")
+        val encryptionSalt = config!!.getString("salt")
+
         // Define encryption configuration
         val encryptionConfig = RtmEncryptionConfig(
-            RtmConstants.RtmEncryptionMode.AES_128_GCM,
+            encryptionMode,
             toAscii(encryptionKey),
             toByteArray(encryptionSalt)
         )
