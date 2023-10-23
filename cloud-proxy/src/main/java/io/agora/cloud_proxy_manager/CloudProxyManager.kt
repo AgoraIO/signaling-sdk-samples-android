@@ -30,5 +30,5 @@ open class CloudProxyManager(context: Context?) : AuthenticationManager(context!
         }
         return true
     }
-    
+
 }
