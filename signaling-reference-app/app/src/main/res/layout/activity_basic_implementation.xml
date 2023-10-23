@@ -3,27 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="6dp"
+    android:background="#ECE5DD"
+    tools:context=".BasicImplementationActivity">
 
-        <Button
-            android:id="@+id/bottom_sheet_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Show Bottom Sheet"
-            android:layout_centerInParent="true" />
+    <include
+        android:id="@+id/panel"
+        layout="@layout/login_subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/bottom_sheet_view"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@android:color/white"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-                <!-- Bottom sheet content -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="This is the bottom sheet" />
-        </LinearLayout>
+    <include
+        android:id="@+id/base_layout"
+        layout="@layout/base_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/panel" />
 
 </RelativeLayout>

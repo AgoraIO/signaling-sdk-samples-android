@@ -13,15 +13,15 @@ Clone the repo, run, and test the samples, and use the code in your own project.
 
 This reference app includes several samples that illustrate the functionality and features of Agora Signaling SDK. Each sample is self-contained and the relevant code can be found in its own folder in the root directory. For more information about each sample, see:
 
-- [SDK quickstart](sdk_quickstart/) - the minimum code you need to integrate low-latency, high-concurrency
+- [SDK quickstart](signaling-manager/) - the minimum code you need to integrate low-latency, high-concurrency
   signaling features into your app using Signaling SDK.
-- [Secure authentication with tokens](authentication_workflow/) - quickly set up an authentication token server, retrieve a token from the server, and use it to connect securely to Signaling as a specific user.
-- [Stream channels](stream_channel/) - communicate to other users in topics.
+- [Secure authentication with tokens](authentication-workflow/) - quickly set up an authentication token server, retrieve a token from the server, and use it to connect securely to Signaling as a specific user.
+- [Stream channels](stream-channel/) - communicate to other users in topics.
 - [Store channel and user data](storage) - easily store data for users and channels without the need to
   set up your own databases. 
-- [Connect through restricted networks with Cloud Proxy](cloud_proxy/) - ensure reliable connectivity for your users when they connect from an
+- [Connect through restricted networks with Cloud Proxy](cloud-proxy/) - ensure reliable connectivity for your users when they connect from an
   environment with a restricted network.
-- [Data encryption](data_encryption) - integrate built-in data encryption into your app using Signaling.
+- [Data encryption](data-encryption) - integrate built-in data encryption into your app using Signaling.
 - [Geofencing](geofencing) - only connect to Signaling within the specified region.
 
 To view the UI implementation, open the relevant Activity Class file [here](signaling-reference-app/app/src/main/java/io/agora/signaling_reference_app).

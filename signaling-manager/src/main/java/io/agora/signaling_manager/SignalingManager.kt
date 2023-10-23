@@ -20,9 +20,9 @@ open class SignalingManager(context: Context) {
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
-        private set
+        protected set
     var isSubscribed = false // Channel subscription status
-        private set
+        protected set
 
     init {
         mContext = context
@@ -62,6 +62,9 @@ open class SignalingManager(context: Context) {
 
         override fun onPresenceEvent(eventArgs: PresenceEvent) {
             // Your Presence Event handler
+            if (eventArgs.eventType == RtmConstants.RtmPresenceEventType.SNAPSHOT) {
+                channelType = eventArgs.channelType
+            }
             mListener?.onSignalingEvent("Presence", eventArgs)
         }
 
@@ -135,9 +138,9 @@ open class SignalingManager(context: Context) {
         return 0
     }
 
-    fun logout() {
+    open fun logout() {
         if (!isLoggedIn) {
-            notify("Join a channel first")
+            notify("You need to login first")
         } else {
             // To leave a channel, call the `leaveChannel` method
             signalingEngine?.logout(object: ResultCallback<Void?> {
@@ -234,7 +237,7 @@ open class SignalingManager(context: Context) {
     }
 
     interface SignalingManagerListener {
-        fun onMessageReceived(message: String?)
+        fun onNotification(message: String?)
         fun onSignalingEvent(eventType: String, eventArgs: Any)
         fun onSubscribeUnsubscribe(subscribed: Boolean)
         fun onLoginLogout(loggedIn: Boolean)
@@ -243,7 +246,7 @@ open class SignalingManager(context: Context) {
 
     protected fun notify(message: String?) {
         // Sends notification message to the Ui
-        mListener?.onMessageReceived(message)
+        mListener?.onNotification(message)
     }
 
 }
