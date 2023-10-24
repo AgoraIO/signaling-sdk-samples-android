@@ -17,21 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Androidreferenceapp"
         tools:targetApi="31">
-        <activity
-            android:name=".DataEncryptionActivity"
-            android:exported="false"
-            android:label="Data encryption">
-        </activity>
-        <activity
-            android:name=".CloudProxyActivity"
-            android:exported="false"
-            android:label="Cloud proxy">
-        </activity>
-        <activity
-            android:name=".StreamChannelActivity"
-            android:exported="false"
-            android:label="Stream channel">
-        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -51,6 +37,22 @@
         <activity
             android:name=".AuthenticationActivity"
             android:label="Secure authentication with tokens" />
+        <activity
+            android:name=".GeofencingActivity"
+            android:exported="false"
+            android:label="Geofencing" />
+        <activity
+            android:name=".DataEncryptionActivity"
+            android:exported="false"
+            android:label="Data encryption" />
+        <activity
+            android:name=".CloudProxyActivity"
+            android:exported="false"
+            android:label="Cloud proxy" />
+        <activity
+            android:name=".StreamChannelActivity"
+            android:exported="false"
+            android:label="Stream channel" />
     </application>
 
 </manifest>
