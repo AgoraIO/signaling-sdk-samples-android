@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ECE5DD">
+
+    <TextView
+        android:id="@+id/captionChannel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/channel_metadata_caption"
+        android:layout_alignParentTop="true"/>
+
+    <EditText
+        android:id="@+id/editKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/captionChannel"
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/key_hint"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/captionChannel"
+        android:layout_toEndOf="@id/editKey"
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/key_hint"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/caption"
+        android:layout_alignParentEnd="true"
+        android:onClick="subscribeUnsubscribe"
+        android:layout_marginHorizontal="2dp"
+        android:text="@string/lock_acquire" />
+
+</RelativeLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ECE5DD">
+
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/locks_caption"
+        android:layout_alignParentTop="true"/>
+
+    <Button
+        android:id="@+id/btnAcquire"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/caption"
+        android:layout_alignParentEnd="true"
+        android:onClick="subscribeUnsubscribe"
+        android:layout_marginHorizontal="2dp"
+        android:text="@string/lock_acquire" />
+
+    <EditText
+        android:id="@+id/editLockName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/btnSet"
+        android:layout_below="@id/caption"
+        android:layout_toStartOf="@id/btnSet"
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/lock_name_hint"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btnSet"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/btnAcquire"
+        android:layout_toStartOf="@id/btnAcquire"
+        android:layout_marginHorizontal="5dp"
+        android:onClick="setLock"
+        android:text="@string/lock_set" />
+
+    <Button
+        android:id="@+id/btnGet"
+        android:layout_width="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAcquire"
+        android:onClick="getLock"
+        android:layout_marginHorizontal="2dp"
+        android:text="@string/lock_get" />
+
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAcquire"
+        android:layout_alignEnd="@id/btnSet"
+        android:onClick="removeLock"
+        android:layout_marginHorizontal="2dp"
+        android:text="@string/lock_remove" />
+
+    <Button
+        android:id="@+id/btnRelease"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAcquire"
+        android:layout_alignEnd="@id/editLockName"
+        android:onClick="subscribeUnsubscribe"
+        android:layout_marginHorizontal="2dp"
+        android:text="@string/lock_release" />
+
+</RelativeLayout>

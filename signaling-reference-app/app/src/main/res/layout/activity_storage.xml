@@ -12,6 +12,14 @@
         android:id="@+id/panel"
         layout="@layout/login_subscribe"
         android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/locksPanel"
+        layout="@layout/panel_locks_layout"
+        android:layout_below="@id/panel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <include
@@ -19,6 +27,6 @@
         layout="@layout/base_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/panel" />
+        android:layout_below="@id/locksPanel" />
 
 </RelativeLayout>
