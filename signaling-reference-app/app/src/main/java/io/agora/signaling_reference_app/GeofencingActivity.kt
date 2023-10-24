@@ -1,15 +1,15 @@
 package io.agora.signaling_reference_app
 
 import android.os.Bundle
-import io.agora.cloud_proxy_manager.CloudProxyManager
+import io.agora.geofencing_manager.GeofencingManager
 
-class CloudProxyActivity : AuthenticationActivity() {
-    private lateinit var cloudProxyManager: CloudProxyManager
+class GeofencingActivity : AuthenticationActivity() {
+    private lateinit var geofencingManager: GeofencingManager
 
     override fun initializeSignalingManager() {
         // Instantiate an object of the AuthenticationManager class, which extends SignalingManager
-        cloudProxyManager = CloudProxyManager(this)
-        signalingManager = cloudProxyManager
+        geofencingManager = GeofencingManager(this)
+        signalingManager = geofencingManager
 
         // Set up a listener for updating the UI
         signalingManager.setListener(signalingManagerListener)
@@ -19,6 +19,6 @@ class CloudProxyActivity : AuthenticationActivity() {
         // Read the uid from the UI
         val uid = editUid.text.toString().toInt()
         // Login using the provided uid
-        cloudProxyManager.loginWithToken(uid)
+        geofencingManager.loginWithToken(uid)
     }
 }

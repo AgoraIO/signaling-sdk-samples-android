@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.STREAM_CHANNEL -> launchActivity(StreamChannelActivity::class.java)
                     ListItem.ExampleId.CLOUD_PROXY -> launchActivity(CloudProxyActivity::class.java)
                     ListItem.ExampleId.DATA_ENCRYPTION -> launchActivity(DataEncryptionActivity::class.java)
+                    ListItem.ExampleId.GEOFENCING -> launchActivity(GeofencingActivity::class.java)
                     else -> {}
                 }
             }

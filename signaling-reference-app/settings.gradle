@@ -16,9 +16,10 @@ rootProject.name = "signaling-reference-app"
 
 include ':app'
 include ':signaling-manager', ':authentication-workflow', ':stream-channel', ':cloud-proxy'
-include ':data-encryption'
+include ':data-encryption', ':geofencing'
 project(':signaling-manager').projectDir = new File(rootProject.projectDir, '../signaling-manager')
 project(':authentication-workflow').projectDir = new File(rootProject.projectDir, '../authentication-workflow')
 project(':stream-channel').projectDir = new File(rootProject.projectDir, '../stream-channel')
 project(':cloud-proxy').projectDir = new File(rootProject.projectDir, '../cloud-proxy')
 project(':data-encryption').projectDir = new File(rootProject.projectDir, '../data-encryption')
+project(':geofencing').projectDir = new File(rootProject.projectDir, '../geofencing')
