@@ -18,18 +18,19 @@
         android:theme="@style/Theme.Androidreferenceapp"
         tools:targetApi="31">
         <activity
+            android:name=".DataEncryptionActivity"
+            android:exported="false"
+            android:label="Data encryption">
+        </activity>
+        <activity
             android:name=".CloudProxyActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+            android:exported="false"
+            android:label="Cloud proxy">
         </activity>
         <activity
             android:name=".StreamChannelActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+            android:exported="false"
+            android:label="Stream channel">
         </activity>
         <activity
             android:name=".MainActivity"
@@ -37,7 +38,6 @@
             android:label="Signaling reference app">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
