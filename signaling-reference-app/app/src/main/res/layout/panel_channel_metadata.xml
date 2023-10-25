@@ -54,13 +54,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editKey"
-        android:layout_toEndOf="@id/editRevision"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_toStartOf="@id/btnUpdate"
-        android:layout_margin="5dp"
-        android:padding="5dp"
+        android:layout_toEndOf="@id/editRevision"
         android:background="#FFFFFF"
         android:hint="@string/lock_apply_hint"
-        android:inputType="text" />
+        android:inputType="text"
+        android:padding="5dp" />
 
     <Button
         android:id="@+id/btnUpdate"
@@ -68,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/editValue"
         android:layout_alignParentEnd="true"
-        android:onClick="subscribeUnsubscribe"
+        android:onClick="onChannelMetadataUpdate"
         android:layout_margin="2dp"
         android:text="@string/update" />
 

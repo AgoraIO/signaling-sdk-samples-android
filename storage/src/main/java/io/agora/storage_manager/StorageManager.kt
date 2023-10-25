@@ -3,10 +3,9 @@ package io.agora.storage_manager
 import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.*
-import io.agora.rtm.RtmConstants.RtmChannelType
-
 
 open class StorageManager(context: Context?) : AuthenticationManager(context!!) {
+    val subscribedIds = HashSet<Int>()
 
     fun setUserMetadata(uid: Int, key: String, value: String) {
         // Create a metadata instance
@@ -50,22 +49,23 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
     fun getUserMetadata(uid: Int) {
         signalingEngine?.storage?.getUserMetadata(uid.toString(), object: ResultCallback<Metadata?> {
             override fun onSuccess(data: Metadata?) {
-                notify("get user metadata success")
                 val items = data?.metadataItems
+                var summary = "User metadata\n"
                 if (items != null) {
                     for (item in items) {
-                        notify(item.toString())
+                        summary += "${item.key}: ${item.value}\n"
                     }
                 }
+                notify(summary)
             }
 
             override fun onFailure(errorInfo: ErrorInfo) {
-                notify(errorInfo.toString())
+                notify("Failed to get user metadata: $errorInfo")
             }
         })
     }
 
-    fun setChannelMetadata(channelName: String, key: String, value: String, revision: Long, lockName: String) {
+    fun setChannelMetadata(key: String, value: String, revision: Long, lockName: String) {
         // Create a metadata instance
         val metadata: Metadata = signalingEngine!!.storage!!.createMetadata()
 
@@ -85,31 +85,99 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
             })
     }
 
-    fun getChannelMetadata(channelName: String, channelType: RtmChannelType) {
+    fun getChannelMetadata() {
+        signalingEngine?.storage?.getChannelMetadata(channelName, channelType, object: ResultCallback<Metadata?> {
+            override fun onSuccess(data: Metadata?) {
+                notify("Get channel metadata success")
+                val items = data?.metadataItems
+                if (items != null) {
+                    for (item in items) {
+                        notify(item.toString())
+                    }
+                }
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 
     fun subscribeUserMetadata(uid: Int) {
+        if (subscribedIds.contains(uid)) {
+            return
+        }
+        signalingEngine?.storage?.subscribeUserMetadata(
+            uid.toString(),
+            object : ResultCallback<Void?> {
+                override fun onSuccess(responseInfo: Void?) {
+                    notify("Subscribe user metadata success")
+                    subscribedIds.add(uid)
+                }
 
+                override fun onFailure(errorInfo: ErrorInfo) {
+                    notify(errorInfo.toString())
+                }
+            })
     }
 
-    fun setLock (channelName: String, channelType: RtmChannelType, lockName: String, ttl: String) {
+    fun setLock (channelName: String, lockName: String, ttl: Long) {
+        signalingEngine?.lock?.setLock(channelName, channelType, lockName, ttl, object: ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                notify("Lock set successfully")
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 
-    fun acquireLock() {
+    fun acquireLock(channelName: String, lockName: String, retry: Boolean) {
+        signalingEngine?.lock?.acquireLock(channelName, channelType, lockName, retry, object: ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                notify("Lock acquired successfully")
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 
-    fun releaseLock() {
+    fun releaseLock(channelName: String, lockName: String, retry: Boolean) {
+        signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                notify("Lock released successfully")
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 
-    fun removeLock() {
+    fun removeLock(channelName: String, lockName: String) {
+        signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                notify("Lock released successfully")
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 
-    fun getLock() {
+    fun getLock(channelName: String, lockName: String) {
+        signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                notify("Lock released successfully")
+            }
 
+            override fun onFailure(errorInfo: ErrorInfo) {
+                notify(errorInfo.toString())
+            }
+        })
     }
 }

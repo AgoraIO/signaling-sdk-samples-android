@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ECE5DD">
+
+    <TextView
+        android:id="@+id/captionUserMetadata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_metadata_caption"
+        android:layout_alignParentTop="true"/>
+
+    <Button
+        android:id="@+id/btnUpdateUserMetadata"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/editUserMetadata"
+        android:layout_alignParentEnd="true"
+        android:onClick="onUserMetadataUpdate"
+        android:layout_margin="2dp"
+        android:text="@string/update" />
+
+    <EditText
+        android:id="@+id/editUserMetadata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/captionUserMetadata"
+        android:layout_alignParentStart="true"
+        android:layout_marginVertical="5dp"
+        android:padding="5dp"
+        android:background="#FFFFFF"
+        android:hint="@string/user_metadata_hint"
+        android:inputType="text" />
+
+</RelativeLayout>

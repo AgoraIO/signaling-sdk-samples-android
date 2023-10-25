@@ -31,4 +31,6 @@
     <string name="revision_hint">Revision</string>
     <string name="update">Update</string>
     <string name="lock_apply_hint">Lock to apply</string>
+    <string name="user_metadata_caption">User metadata:</string>
+    <string name="user_metadata_hint">Value for key userBio</string>
 </resources>

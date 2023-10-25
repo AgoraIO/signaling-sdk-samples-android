@@ -125,6 +125,10 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
+                if (errorInfo?.errorCode == RtmConstants.RtmErrorCode.DUPLICATE_OPERATION) {
+                    isLoggedIn = true
+                    logout()
+                }
                 notify("Login failed:\n"+ errorInfo.toString())// Handle failure
             }
 
