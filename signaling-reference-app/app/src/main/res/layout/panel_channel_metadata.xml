@@ -50,7 +50,7 @@
         android:inputType="number" />
 
     <EditText
-        android:id="@+id/editLockName"
+        android:id="@+id/editLock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editKey"

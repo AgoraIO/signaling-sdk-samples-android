@@ -32,7 +32,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         val metadata: Metadata = signalingEngine!!.storage!!.createMetadata()
 
         // Add a metadata item
-        metadata.setMetadataItem(MetadataItem(key, value))
+        metadata.setMetadataItem(MetadataItem(key, value, -1))
 
         signalingEngine?.storage?.updateUserMetadata(uid.toString(), metadata,
             MetadataOptions(true, true), object: ResultCallback<Void?> {
@@ -76,11 +76,11 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         signalingEngine?.storage?.setChannelMetadata(channelName, channelType, metadata,
             MetadataOptions(true, true), lockName, object: ResultCallback<Void?> {
                 override fun onSuccess(responseInfo: Void?) {
-                    notify("User metadata set successfully")
+                    notify("Channel metadata set successfully")
                 }
 
                 override fun onFailure(errorInfo: ErrorInfo) {
-                    notify("Failed to set user metadata: $errorInfo")
+                    notify("Failed to set channel metadata: $errorInfo")
                 }
             })
     }
@@ -88,13 +88,14 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
     fun getChannelMetadata() {
         signalingEngine?.storage?.getChannelMetadata(channelName, channelType, object: ResultCallback<Metadata?> {
             override fun onSuccess(data: Metadata?) {
-                notify("Get channel metadata success")
+                var summary = "Channel metadata\n"
                 val items = data?.metadataItems
                 if (items != null) {
                     for (item in items) {
-                        notify(item.toString())
+                        summary += "${item.key}: ${item.value}\n"
                     }
                 }
+                notify(summary)
             }
 
             override fun onFailure(errorInfo: ErrorInfo) {
@@ -121,7 +122,8 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
             })
     }
 
-    fun setLock (channelName: String, lockName: String, ttl: Long) {
+    fun setLock (lockName: String, ttl: Long) {
+        // ttl is the lock expiration time in case the user goes offline
         signalingEngine?.lock?.setLock(channelName, channelType, lockName, ttl, object: ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
                 notify("Lock set successfully")
@@ -133,7 +135,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         })
     }
 
-    fun acquireLock(channelName: String, lockName: String, retry: Boolean) {
+    fun acquireLock(lockName: String, retry: Boolean) {
         signalingEngine?.lock?.acquireLock(channelName, channelType, lockName, retry, object: ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
                 notify("Lock acquired successfully")
@@ -145,7 +147,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         })
     }
 
-    fun releaseLock(channelName: String, lockName: String, retry: Boolean) {
+    fun releaseLock(lockName: String, retry: Boolean) {
         signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
                 notify("Lock released successfully")
@@ -157,7 +159,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         })
     }
 
-    fun removeLock(channelName: String, lockName: String) {
+    fun removeLock(lockName: String) {
         signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
                 notify("Lock released successfully")
@@ -169,10 +171,16 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         })
     }
 
-    fun getLock(channelName: String, lockName: String) {
-        signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
-            override fun onSuccess(responseInfo: Void?) {
-                notify("Lock released successfully")
+    fun getLocks() {
+        signalingEngine?.lock?.getLocks(channelName, channelType, object: ResultCallback<ArrayList<LockDetail?>> {
+            override fun onSuccess(lockDetail: ArrayList<LockDetail?>) {
+                var summary = "Lock details:\n"
+                for (lock in lockDetail) {
+                    if (lock != null) {
+                        summary += "Lock: ${lock.lockName}, Owner:${lock.lockOwner}"
+                    }
+                }
+                notify(summary)
             }
 
             override fun onFailure(errorInfo: ErrorInfo) {

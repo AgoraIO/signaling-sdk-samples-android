@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/caption"
         android:layout_alignParentEnd="true"
-        android:onClick="subscribeUnsubscribe"
+        android:onClick="onAcquireLock"
         android:layout_marginHorizontal="2dp"
         android:text="@string/lock_acquire" />
 
@@ -41,7 +41,7 @@
         android:layout_alignTop="@id/btnAcquire"
         android:layout_toStartOf="@id/btnAcquire"
         android:layout_marginHorizontal="5dp"
-        android:onClick="setLock"
+        android:onClick="onSetLock"
         android:text="@string/lock_set" />
 
     <Button
@@ -50,7 +50,7 @@
         android:layout_alignParentEnd="true"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnAcquire"
-        android:onClick="getLock"
+        android:onClick="onGetLock"
         android:layout_marginHorizontal="2dp"
         android:text="@string/lock_get" />
 
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnAcquire"
         android:layout_alignEnd="@id/btnSet"
-        android:onClick="removeLock"
+        android:onClick="onRemoveLock"
         android:layout_marginHorizontal="2dp"
         android:text="@string/lock_remove" />
 
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnAcquire"
         android:layout_alignEnd="@id/editLockName"
-        android:onClick="subscribeUnsubscribe"
+        android:onClick="onReleaseLock"
         android:layout_marginHorizontal="2dp"
         android:text="@string/lock_release" />
 

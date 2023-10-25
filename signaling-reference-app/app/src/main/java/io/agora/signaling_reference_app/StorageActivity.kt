@@ -1,6 +1,7 @@
 package io.agora.signaling_reference_app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -16,6 +17,7 @@ class StorageActivity : AuthenticationActivity() {
     private lateinit var editKey: EditText
     private lateinit var editValue: EditText
     private lateinit var editRevision: EditText
+    private lateinit var editLock: EditText
     private lateinit var editLockName: EditText
 
     override val layoutResourceId: Int
@@ -27,6 +29,7 @@ class StorageActivity : AuthenticationActivity() {
         editKey = findViewById(R.id.editKey)
         editValue = findViewById(R.id.editValue)
         editRevision = findViewById(R.id.editRevision)
+        editLock = findViewById(R.id.editLock)
         editLockName = findViewById(R.id.editLockName)
     }
 
@@ -71,7 +74,7 @@ class StorageActivity : AuthenticationActivity() {
         // Subscribe to the user's metadata to receive updates
         storageManager.subscribeUserMetadata(userId.toInt())
 
-        // Add an onclick listenr
+        // Add an onclick listener
         userIconView.setOnClickListener{
             onUserIconClick(userIconView)
         }
@@ -85,6 +88,7 @@ class StorageActivity : AuthenticationActivity() {
     fun onUserMetadataUpdate(view: View) {
         val value = editUserMetadata.text.toString()
         storageManager.setUserMetadata(storageManager.localUid,"userBio", value)
+        editUserMetadata.setText("")
     }
 
     fun onChannelMetadataUpdate(view: View) {
@@ -93,12 +97,15 @@ class StorageActivity : AuthenticationActivity() {
 
         val value = editValue.text.toString()
 
-        var revision = editRevision.text.toString().toLong()
-        if (revision == 0L ) revision = -1
+        var revision: Long = try {
+            editRevision.text.toString().toLong()
+        } catch (e: NumberFormatException) {
+            -1L
+        }
 
-        val lock = editLockName.text.toString()
+        val lock = editLock.text.toString()
 
-        storageManager?.setChannelMetadata(key, value, revision, lock)
+        storageManager.setChannelMetadata(key, value, revision, lock)
 
     }
 
@@ -107,7 +114,9 @@ class StorageActivity : AuthenticationActivity() {
         val items = data.metadataItems
         if (items != null) {
             for (item in items) {
-                summary += "${item.key}: ${item.value}\n"
+                val row = "${item.key}: ${item.value}, Rev: ${item.revision}\n"
+                Log.i("ChannelMetadata", row)
+                summary += row
             }
         }
         showMessage(summary)
@@ -133,6 +142,30 @@ class StorageActivity : AuthenticationActivity() {
                 showMessage("Storage event: ${storageEventArgs.eventType}")
             }
         }
+    }
+
+    fun onSetLock(view: View) {
+        val lockName = editLockName.text.toString()
+        storageManager.setLock(lockName, 60)
+    }
+
+    fun onGetLock(view: View) {
+        storageManager.getLocks()
+    }
+
+    fun onReleaseLock(view: View) {
+        val lockName = editLockName.text.toString()
+        storageManager.releaseLock(lockName, false)
+    }
+
+    fun onAcquireLock(view: View) {
+        val lockName = editLockName.text.toString()
+        storageManager.acquireLock(lockName, false)
+    }
+
+    fun onRemoveLock(view: View) {
+        val lockName = editLockName.text.toString()
+        storageManager.removeLock(lockName)
     }
 
     override fun handleSubscribeUnsubscribe(subscribed: Boolean) {
