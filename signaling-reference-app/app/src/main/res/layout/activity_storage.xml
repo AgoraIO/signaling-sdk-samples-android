@@ -23,10 +23,18 @@
         android:layout_height="wrap_content" />
 
     <include
+        android:id="@+id/channelMetadataPanel"
+        layout="@layout/panel_channel_metadata"
+        android:layout_below="@id/locksPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
         android:id="@+id/base_layout"
         layout="@layout/base_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/locksPanel" />
+        android:layout_below="@id/channelMetadataPanel" />
+
 
 </RelativeLayout>

@@ -81,7 +81,7 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
         fetchToken(object : TokenCallback {
             override fun onTokenReceived(token: String?) {
                 // Use the token to renew authentication
-                signalingEngine!!.renewToken(token,object : ResultCallback<Void?> {
+                signalingEngine!!.renewToken(token, object: ResultCallback<Void?> {
                     override fun onFailure(errorInfo: ErrorInfo?) {
                         notify("Failed to renew token")
                     }

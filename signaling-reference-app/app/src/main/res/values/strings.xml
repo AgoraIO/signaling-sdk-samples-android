@@ -27,4 +27,8 @@
     <string name="locks_caption">Locks:</string>
     <string name="channel_metadata_caption">Channel metadata:</string>
     <string name="key_hint">Metadata key</string>
+    <string name="metadata_value">Metadata value</string>
+    <string name="revision_hint">Revision</string>
+    <string name="update">Update</string>
+    <string name="lock_apply_hint">Lock to apply</string>
 </resources>
