@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.agora.rtm.MessageEvent
 import io.agora.rtm.PresenceEvent
 import io.agora.rtm.RtmConstants
+import io.agora.rtm.StorageEvent
 import org.json.JSONObject
 
 open class BasicImplementationActivity : AppCompatActivity() {
@@ -210,7 +211,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
         }
     }
 
-    private fun createUserIcon(userId: String): View {
+
+    open fun createUserIcon(userId: String): View {
         val userIconView = LayoutInflater.from(this).inflate(
             R.layout.user_icon_layout, userListLayout, false)
 
@@ -227,7 +229,12 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
         // Add view to the map
         userIconsMap[userId] = userIconView
+
         return userIconView
+    }
+
+    open fun onUserIconClick(userIconView: View) {
+        // Override to respond to userIcon click
     }
 
     protected val signalingManagerListener: SignalingManager.SignalingManagerListener
@@ -266,7 +273,8 @@ open class BasicImplementationActivity : AppCompatActivity() {
 
                     }
                     "Storage" -> {
-
+                        val storageEventArgs = eventArgs as StorageEvent
+                        onStorageEvent(storageEventArgs)
                     }
 
                 }
@@ -292,6 +300,10 @@ open class BasicImplementationActivity : AppCompatActivity() {
                 updateUserList(userList)
             }
         }
+
+    open fun onStorageEvent(storageEventArgs: StorageEvent) {
+        // override to respond to storage events
+    }
 
     open fun handleSubscribeUnsubscribe(subscribed: Boolean) {
         runOnUiThread {

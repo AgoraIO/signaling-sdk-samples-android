@@ -18,4 +18,19 @@
     <string name="enter_topic_name">Enter topic name</string>
     <string name="join_stream_channel">Join stream channel</string>
     <string name="leave_stream_channel">Leave stream channel</string>
+    <string name="lock_name_hint">Lock name</string>
+    <string name="lock_get">Get</string>
+    <string name="lock_set">Set</string>
+    <string name="lock_acquire">Acquire</string>
+    <string name="lock_remove">Remove</string>
+    <string name="lock_release">Release</string>
+    <string name="locks_caption">Locks:</string>
+    <string name="channel_metadata_caption">Channel metadata:</string>
+    <string name="key_hint">Metadata key</string>
+    <string name="metadata_value">Metadata value</string>
+    <string name="revision_hint">Revision</string>
+    <string name="update">Update</string>
+    <string name="lock_apply_hint">Lock to apply</string>
+    <string name="user_metadata_caption">User metadata:</string>
+    <string name="user_metadata_hint">Value for key userBio</string>
 </resources>

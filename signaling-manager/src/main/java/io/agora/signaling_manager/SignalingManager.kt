@@ -16,7 +16,7 @@ open class SignalingManager(context: Context) {
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
-    private var channelType = RtmConstants.RtmChannelType.MESSAGE
+    protected var channelType = RtmConstants.RtmChannelType.MESSAGE
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
@@ -125,6 +125,10 @@ open class SignalingManager(context: Context) {
 
         signalingEngine?.login(token, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
+                if (errorInfo?.errorCode == RtmConstants.RtmErrorCode.DUPLICATE_OPERATION) {
+                    isLoggedIn = true
+                    logout()
+                }
                 notify("Login failed:\n"+ errorInfo.toString())// Handle failure
             }
 

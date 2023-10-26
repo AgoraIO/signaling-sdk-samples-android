@@ -24,6 +24,7 @@
             android:label="Signaling reference app">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -52,7 +53,11 @@
         <activity
             android:name=".StreamChannelActivity"
             android:exported="false"
-            android:label="Stream channel" />
+            android:label="Stream channels" />
+        <activity
+            android:name=".StorageActivity"
+            android:exported="false"
+            android:label="Store channel and user data" />
     </application>
 
 </manifest>

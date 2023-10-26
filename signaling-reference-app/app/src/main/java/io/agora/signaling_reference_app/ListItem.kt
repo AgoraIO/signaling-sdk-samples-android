@@ -6,7 +6,7 @@ data class ListItem(val title: String, val id: ExampleId) {
         SDK_QUICKSTART,
         AUTHENTICATION_WORKFLOW,
         STREAM_CHANNEL,
-        STORE_DATA,
+        STORAGE,
         CLOUD_PROXY,
         DATA_ENCRYPTION,
         GEOFENCING

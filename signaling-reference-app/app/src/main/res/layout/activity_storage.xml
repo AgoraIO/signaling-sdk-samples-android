@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="6dp"
+    android:background="#ECE5DD"
+    tools:context=".StorageActivity">
+
+    <include
+        android:id="@+id/panel"
+        layout="@layout/login_subscribe"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/locksPanel"
+        layout="@layout/panel_locks_layout"
+        android:layout_below="@id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/channelMetadataPanel"
+        layout="@layout/panel_channel_metadata"
+        android:layout_below="@id/locksPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/userMetadataPanel"
+        layout="@layout/panel_user_metadata"
+        android:layout_below="@id/channelMetadataPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/base_layout"
+        layout="@layout/base_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/userMetadataPanel" />
+
+
+</RelativeLayout>

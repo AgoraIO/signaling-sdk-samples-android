@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
             ListItem("CORE FUNCTIONALITY", ListItem.ExampleId.HEADER),
             ListItem("Stream channels", ListItem.ExampleId.STREAM_CHANNEL),
-            ListItem("Store channel and user data", ListItem.ExampleId.STORE_DATA),
+            ListItem("Store channel and user data", ListItem.ExampleId.STORAGE),
             ListItem("Connect through restricted networks with cloud proxy", ListItem.ExampleId.CLOUD_PROXY),
             ListItem("Data encryption", ListItem.ExampleId.DATA_ENCRYPTION),
 
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                     ListItem.ExampleId.CLOUD_PROXY -> launchActivity(CloudProxyActivity::class.java)
                     ListItem.ExampleId.DATA_ENCRYPTION -> launchActivity(DataEncryptionActivity::class.java)
                     ListItem.ExampleId.GEOFENCING -> launchActivity(GeofencingActivity::class.java)
+                    ListItem.ExampleId.STORAGE -> launchActivity(StorageActivity::class.java)
                     else -> {}
                 }
             }
