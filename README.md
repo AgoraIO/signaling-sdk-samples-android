@@ -53,7 +53,7 @@ Before getting started with this reference app, ensure you have the following se
 
 1. **Modify the project configuration**
 
-   The app loads connection parameters from the [`config.json`](./agora-manager/src/main/res/raw/config.json) file. Ensure that the file is populated with the required parameter values before running the application.
+   The app loads connection parameters from the [`config.json`](./signaling-manager/src/main/res/raw/config.json) file. Ensure that the file is populated with the required parameter values before running the application.
 
     - `uid`: The user ID associated with the application.
     - `appId`: (Required) The unique ID for the application obtained from [Agora Console](https://console.agora.io). 
@@ -74,4 +74,4 @@ Before getting started with this reference app, ensure you have the following se
 
 ## Contact
 
-If you have any questions, issues, or suggestions, please file an issue in our [GitHub Issue Tracker](https://github.com/AgoraIO/video-sdk-samples-android/issues).
+If you have any questions, issues, or suggestions, please file an issue in our [GitHub Issue Tracker](https://github.com/AgoraIO/signaling-sdk-samples-android/issues).
