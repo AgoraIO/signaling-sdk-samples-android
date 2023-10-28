@@ -97,7 +97,7 @@ class StorageActivity : AuthenticationActivity() {
 
         val value = editValue.text.toString()
 
-        var revision: Long = try {
+        val revision: Long = try {
             editRevision.text.toString().toLong()
         } catch (e: NumberFormatException) {
             -1L
