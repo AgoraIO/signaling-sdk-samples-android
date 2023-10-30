@@ -202,12 +202,10 @@ open class SignalingManager(context: Context) {
 
     fun publishChannelMessage (message: String): Int {
         val publishOptions = PublishOptions()
-        var result = 0
 
         signalingEngine?.publish(channelName, message, publishOptions, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
                 notify("Failed to send message:\n"+ errorInfo.toString())
-                result =  1
             }
 
             override fun onSuccess(responseInfo: Void?) {
@@ -215,7 +213,7 @@ open class SignalingManager(context: Context) {
             }
         })
 
-        return result
+        return 0
     }
 
     fun getOnlineUsers () {
