@@ -1,12 +1,15 @@
 package io.agora.signaling_manager
 
-import io.agora.rtm.*
-
 import android.content.Context
+import android.util.Log
+import io.agora.rtm.*
+import io.agora.rtm.RtmConstants.RtmChannelType
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
+import kotlin.math.sign
+
 
 open class SignalingManager(context: Context) {
     private val mContext: Context
@@ -16,7 +19,7 @@ open class SignalingManager(context: Context) {
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
-    protected var channelType = RtmConstants.RtmChannelType.MESSAGE
+    protected var channelType = RtmChannelType.MESSAGE
 
     var localUid: Int // UID of the local user
     var isLoggedIn = false // Login status
@@ -169,7 +172,11 @@ open class SignalingManager(context: Context) {
 
     fun subscribe(channelName: String): Int {
         // Subscribe to a channel
-        val subscribeOptions = SubscribeOptions(true, true, true, true)
+        val subscribeOptions = SubscribeOptions(
+            true, // with Message
+            true, // with Presence
+            true, // with Metadata
+            true) // with Lock
 
         signalingEngine?.subscribe(channelName, subscribeOptions, object: ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
@@ -183,6 +190,39 @@ open class SignalingManager(context: Context) {
             }
         })
         return 0
+    }
+
+    fun getState(uid: Int) {
+        signalingEngine?.presence?.getState(channelName, channelType, uid.toString(),
+            object : ResultCallback<UserState?> {
+                override fun onSuccess(state: UserState?) {
+                    if (state != null) {
+                        for (item in state.states) {
+                            Log.i("getState $uid:", item.toString())
+                        }
+                    }
+                }
+
+                override fun onFailure(errorInfo: ErrorInfo) {
+                    notify(errorInfo.toString())
+                }
+            })
+    }
+
+    fun setStatus() {
+        val stateItems: ArrayList<StateItem> = ArrayList()
+        stateItems.add(StateItem("mood", "pumped"))
+
+        signalingEngine?.presence?.setState(channelName, channelType, stateItems,
+            object : ResultCallback<Void?> {
+                override fun onSuccess(responseInfo: Void?) {
+                    notify("Set state success")
+                }
+
+                override fun onFailure(errorInfo: ErrorInfo) {
+                    notify(errorInfo.toString())
+                }
+            })
     }
 
     fun unsubscribe(channelName: String): Int {
