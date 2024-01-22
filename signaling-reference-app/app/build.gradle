@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation "io.agora:agora-rtm:${project.signalingSDKVersion}"
+    implementation "io.agora.rtm:rtm-sdk:${project.signalingSDKVersion}"
     implementation project(':signaling-manager')
     implementation project(':authentication-workflow')
     implementation project(':stream-channel')

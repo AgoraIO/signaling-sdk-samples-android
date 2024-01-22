@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation "io.agora:agora-rtm:${project.signalingSDKVersion}"
+    implementation "io.agora.rtm:rtm-sdk:${project.signalingSDKVersion}"
     implementation project(':signaling-manager')
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'androidx.appcompat:appcompat:1.6.1'
