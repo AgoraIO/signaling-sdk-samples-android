@@ -66,12 +66,10 @@ open class AuthenticationManager(context: Context?) : SignalingManager(
                 baseEventHandler?.onStorageEvent(eventArgs)
             }
 
-            override fun onConnectionStateChanged(
-                channelName: String?,
-                state: RtmConstants.RtmConnectionState?,
-                reason: RtmConstants.RtmConnectionChangeReason?
-            ) {
-                baseEventHandler?.onConnectionStateChanged(channelName, state, reason)
+            override fun onLinkStateEvent(eventArgs: LinkStateEvent?) {
+                if (eventArgs != null) {
+                    mListener?.onSignalingEvent("LinkState", eventArgs)
+                }
             }
         }
 

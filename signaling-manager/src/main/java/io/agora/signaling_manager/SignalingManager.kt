@@ -1,18 +1,19 @@
 package io.agora.signaling_manager
 
-import io.agora.rtm.*
-
 import android.content.Context
+import io.agora.rtm.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
+
 open class SignalingManager(context: Context) {
     private val mContext: Context
 
     protected var signalingEngine: RtmClient? = null // The RTCEngine instance
-    protected var mListener: SignalingManagerListener? = null // The event handler for Signaling events
+    protected var mListener: SignalingManagerListener? =
+        null // The event handler for Signaling events
     protected var config: JSONObject? // Configuration parameters from the config.json file
     protected val appId: String // Your App ID from Agora console
     var channelName: String // The name of the Signaling channel
@@ -83,6 +84,13 @@ open class SignalingManager(context: Context) {
             mListener?.onSignalingEvent("Storage", eventArgs)
         }
 
+        override fun onLinkStateEvent(eventArgs: LinkStateEvent?) {
+            if (eventArgs != null) {
+                mListener?.onSignalingEvent("LinkState", eventArgs)
+            }
+        }
+
+        /*
         override fun onConnectionStateChanged(
             channelName: String?,
             state: RtmConstants.RtmConnectionState?,
@@ -90,6 +98,7 @@ open class SignalingManager(context: Context) {
         ) {
             super.onConnectionStateChanged(channelName, state, reason)
         }
+        */
 
         override fun onTokenPrivilegeWillExpire(channelName: String) {
             // Your Token Privilege Will Expire Event handler
@@ -119,7 +128,7 @@ open class SignalingManager(context: Context) {
     }
 
     fun login(uid: Int, token: String): Int {
-        if (signalingEngine ==  null ) {
+        if (signalingEngine == null) {
             setupSignalingEngine(uid)
         }
 
@@ -129,7 +138,7 @@ open class SignalingManager(context: Context) {
                     isLoggedIn = true
                     logout()
                 }
-                notify("Login failed:\n"+ errorInfo.toString())// Handle failure
+                notify("Login failed:\n" + errorInfo.toString())// Handle failure
             }
 
             override fun onSuccess(responseInfo: Void?) {
@@ -147,9 +156,9 @@ open class SignalingManager(context: Context) {
             notify("You need to login first")
         } else {
             // To leave a channel, call the `leaveChannel` method
-            signalingEngine?.logout(object: ResultCallback<Void?> {
+            signalingEngine?.logout(object : ResultCallback<Void?> {
                 override fun onFailure(errorInfo: ErrorInfo?) {
-                    notify("Logout failed:\n"+ errorInfo.toString())
+                    notify("Logout failed:\n" + errorInfo.toString())
                 }
 
                 override fun onSuccess(responseInfo: Void?) {
@@ -169,11 +178,15 @@ open class SignalingManager(context: Context) {
 
     fun subscribe(channelName: String): Int {
         // Subscribe to a channel
-        val subscribeOptions = SubscribeOptions(true, true, true, true)
+        val subscribeOptions = SubscribeOptions()
+        subscribeOptions.withMessage = true
+        subscribeOptions.withPresence = true
+        subscribeOptions.withMetadata = false
+        subscribeOptions.withLock = false
 
-        signalingEngine?.subscribe(channelName, subscribeOptions, object: ResultCallback<Void?> {
+        signalingEngine?.subscribe(channelName, subscribeOptions, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("Subscribe failed:\n"+ errorInfo.toString())
+                notify("Subscribe failed:\n" + errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
@@ -186,9 +199,9 @@ open class SignalingManager(context: Context) {
     }
 
     fun unsubscribe(channelName: String): Int {
-        signalingEngine?.unsubscribe(channelName, object: ResultCallback<Void?> {
+        signalingEngine?.unsubscribe(channelName, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("Unsubscribe failed:\n"+ errorInfo.toString())
+                notify("Unsubscribe failed:\n" + errorInfo.toString())
             }
 
             override fun onSuccess(responseInfo: Void?) {
@@ -200,36 +213,44 @@ open class SignalingManager(context: Context) {
         return 0
     }
 
-    fun publishChannelMessage (message: String): Int {
+    fun publishChannelMessage(message: String): Int {
         val publishOptions = PublishOptions()
 
-        signalingEngine?.publish(channelName, message, publishOptions, object: ResultCallback<Void?> {
-            override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("Failed to send message:\n"+ errorInfo.toString())
-            }
+        signalingEngine?.publish(
+            channelName,
+            message,
+            publishOptions,
+            object : ResultCallback<Void?> {
+                override fun onFailure(errorInfo: ErrorInfo?) {
+                    notify("Failed to send message:\n" + errorInfo.toString())
+                }
 
-            override fun onSuccess(responseInfo: Void?) {
-                notify("Message sent")
-            }
-        })
+                override fun onSuccess(responseInfo: Void?) {
+                    notify("Message sent")
+                }
+            })
 
         return 0
     }
 
-    fun getOnlineUsers () {
+    fun getOnlineUsers() {
 
         val getOnlineUsersOptions = GetOnlineUsersOptions(true, true)
-        signalingEngine?.presence?.getOnlineUsers(channelName, channelType, getOnlineUsersOptions,  object: ResultCallback<GetOnlineUsersResult?> {
-            override fun onFailure(errorInfo: ErrorInfo?) {
-                notify("Failed to obtain user list")
-            }
+        signalingEngine?.presence?.getOnlineUsers(
+            channelName,
+            channelType,
+            getOnlineUsersOptions,
+            object : ResultCallback<GetOnlineUsersResult?> {
+                override fun onFailure(errorInfo: ErrorInfo?) {
+                    notify("Failed to obtain user list")
+                }
 
-            override fun onSuccess(getOnlineUsersResult: GetOnlineUsersResult?) {
-                val list = getOnlineUsersResult?.userStateList
-                val userList: List<String> = list?.map { it.userId } ?: emptyList()
-                mListener?.onUserListUpdated(userList)
-            }
-        })
+                override fun onSuccess(getOnlineUsersResult: GetOnlineUsersResult?) {
+                    val list = getOnlineUsersResult?.userStateList
+                    val userList: List<String> = list?.map { it.userId } ?: emptyList()
+                    mListener?.onUserListUpdated(userList)
+                }
+            })
     }
 
     protected open fun destroySignalingEngine() {

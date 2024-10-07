@@ -4,6 +4,7 @@ import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.*
 
+
 open class StreamChannelManager(context: Context?) : AuthenticationManager(context!!) {
     private lateinit var streamChannel: StreamChannel
     var isStreamChannelJoined = false
@@ -16,8 +17,15 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
                 // Use the received token to log in
                 if (token != null) {
                     streamChannel = signalingEngine!!.createStreamChannel(channelName)
+
+                    val options = JoinChannelOptions();
+                    options.token = "yourToken"
+                    options.withPresence = true;
+                    options.withMetadata = false;
+                    options.withLock = false;
+
                     streamChannel.join(
-                        JoinChannelOptions(token, true, true, true),
+                        options,
                         object : ResultCallback<Void?> {
                             override fun onFailure(errorInfo: ErrorInfo?) {
                                 notify("Join stream channel failed:\n" + errorInfo.toString())
@@ -102,7 +110,10 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
     }
 
     fun publishTopicMessage(topicName: String, message: String): Int {
-        streamChannel.publishTopicMessage(topicName, message, PublishOptions(), object : ResultCallback<Void?> {
+        val options = TopicMessageOptions()
+        options.customType = "PlainTxT"
+
+        streamChannel.publishTopicMessage(topicName, message, options, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
                 notify("Message send failed")
             }
@@ -170,12 +181,10 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
                 baseEventHandler?.onStorageEvent(eventArgs)
             }
 
-            override fun onConnectionStateChanged(
-                channelName: String?,
-                state: RtmConstants.RtmConnectionState?,
-                reason: RtmConstants.RtmConnectionChangeReason?
-            ) {
-                baseEventHandler?.onConnectionStateChanged(channelName, state, reason)
+            override fun onLinkStateEvent(eventArgs: LinkStateEvent?) {
+                if (eventArgs != null) {
+                    mListener?.onSignalingEvent("LinkState", eventArgs)
+                }
             }
         }
 }
