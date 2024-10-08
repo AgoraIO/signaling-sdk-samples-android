@@ -181,8 +181,8 @@ open class SignalingManager(context: Context) {
         val subscribeOptions = SubscribeOptions()
         subscribeOptions.withMessage = true
         subscribeOptions.withPresence = true
-        subscribeOptions.withMetadata = false
-        subscribeOptions.withLock = false
+        subscribeOptions.withMetadata = true
+        subscribeOptions.withLock = true
 
         signalingEngine?.subscribe(channelName, subscribeOptions, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
