@@ -4,40 +4,62 @@ import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.*
 
+
 open class StreamChannelManager(context: Context?) : AuthenticationManager(context!!) {
     private lateinit var streamChannel: StreamChannel
     var isStreamChannelJoined = false
     var isTopicJoined = false
     var joinedTopicName: String = ""
 
+    fun joinStreamChannel(channelName: String, token: String): Int {
+        if (token != null) {
+            streamChannel = signalingEngine!!.createStreamChannel(channelName)
+
+            val options = JoinChannelOptions();
+            options.token = token
+            options.withPresence = true;
+            options.withMetadata = true;
+            options.withLock = true;
+
+            streamChannel.join(
+                options,
+                object : ResultCallback<Void?> {
+                    override fun onFailure(errorInfo: ErrorInfo?) {
+                        notify("Join stream channel failed:\n" + errorInfo.toString())
+                        isStreamChannelJoined = false
+                    }
+
+                    override fun onSuccess(responseInfo: Void?) {
+                        isStreamChannelJoined = true
+                        mListener?.onSubscribeUnsubscribe(true)
+                        notify("Joined stream channel: $channelName")
+                    }
+                })
+            return 0
+        } else {
+            return -1
+        }
+    }
+
     fun joinStreamChannel(channelName: String): Int {
-        fetchRTCToken(channelName,1, object : TokenCallback {
-            override fun onTokenReceived(token: String?) {
-                // Use the received token to log in
-                if (token != null) {
-                    streamChannel = signalingEngine!!.createStreamChannel(channelName)
-                    streamChannel.join(
-                        JoinChannelOptions(token, true, true, true),
-                        object : ResultCallback<Void?> {
-                            override fun onFailure(errorInfo: ErrorInfo?) {
-                                notify("Join stream channel failed:\n" + errorInfo.toString())
-                                isStreamChannelJoined = false
-                            }
-
-                            override fun onSuccess(responseInfo: Void?) {
-                                isStreamChannelJoined = true
-                                mListener?.onSubscribeUnsubscribe(true)
-                                notify("Joined stream channel: $channelName")
-                            }
-                        })
+        val rtcToken = config!!.optString("rtcToken")
+        if (rtcToken.isNotBlank()) {
+            joinStreamChannel(channelName, rtcToken)
+        } else {
+            fetchRTCToken(channelName, 1, object : TokenCallback {
+                override fun onTokenReceived(token: String?) {
+                    // Use the received token to log in
+                    if (token != null) {
+                        joinStreamChannel(channelName, token)
+                    }
                 }
-            }
 
-            override fun onError(errorMessage: String) {
-                // Handle the error
-                notify("Error fetching token: $errorMessage")
-            }
-        })
+                override fun onError(errorMessage: String) {
+                    // Handle the error
+                    notify("Error fetching token: $errorMessage")
+                }
+            })
+        }
         return 0
     }
 
@@ -102,7 +124,10 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
     }
 
     fun publishTopicMessage(topicName: String, message: String): Int {
-        streamChannel.publishTopicMessage(topicName, message, PublishOptions(), object : ResultCallback<Void?> {
+        val options = TopicMessageOptions()
+        options.customType = "PlainTxT"
+
+        streamChannel.publishTopicMessage(topicName, message, options, object : ResultCallback<Void?> {
             override fun onFailure(errorInfo: ErrorInfo?) {
                 notify("Message send failed")
             }
@@ -170,12 +195,10 @@ open class StreamChannelManager(context: Context?) : AuthenticationManager(conte
                 baseEventHandler?.onStorageEvent(eventArgs)
             }
 
-            override fun onConnectionStateChanged(
-                channelName: String?,
-                state: RtmConstants.RtmConnectionState?,
-                reason: RtmConstants.RtmConnectionChangeReason?
-            ) {
-                baseEventHandler?.onConnectionStateChanged(channelName, state, reason)
+            override fun onLinkStateEvent(eventArgs: LinkStateEvent?) {
+                if (eventArgs != null) {
+                    mListener?.onSignalingEvent("LinkState", eventArgs)
+                }
             }
         }
 }

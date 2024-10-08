@@ -111,7 +111,7 @@ class StorageActivity : AuthenticationActivity() {
 
     private fun showChannelMetadata(data: io.agora.rtm.Metadata) {
         var summary = "Channel metadata\n"
-        val items = data.metadataItems
+        val items = data.items
         if (items != null) {
             for (item in items) {
                 val row = "${item.key}: ${item.value}, Rev: ${item.revision}\n"
@@ -155,7 +155,7 @@ class StorageActivity : AuthenticationActivity() {
 
     fun onReleaseLock(view: View) {
         val lockName = editLockName.text.toString()
-        storageManager.releaseLock(lockName, false)
+        storageManager.releaseLock(lockName)
     }
 
     fun onAcquireLock(view: View) {

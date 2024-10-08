@@ -4,19 +4,28 @@ import android.content.Context
 import io.agora.authentication_manager.AuthenticationManager
 import io.agora.rtm.*
 
+
 open class StorageManager(context: Context?) : AuthenticationManager(context!!) {
     val subscribedIds = HashSet<Int>()
 
     fun setUserMetadata(uid: Int, key: String, value: String) {
         // Create a metadata instance
-        val metadata: Metadata = signalingEngine!!.storage!!.createMetadata()
+        val metadata: Metadata = Metadata()
 
         // Add a metadata item
-        metadata.setMetadataItem(MetadataItem(key, value, -1))
+        val items = ArrayList<MetadataItem>()
+        items.add(MetadataItem(key, value, -1))
+        metadata.items = items
+
+        // Record who and when set the metadata
+        val options = MetadataOptions()
+        options.recordTs = true
+        options.recordUserId = true
+
         metadata.majorRevision = -1
 
         signalingEngine?.storage?.setUserMetadata(uid.toString(), metadata,
-            MetadataOptions(true, true), object: ResultCallback<Void?> {
+            options, object: ResultCallback<Void?> {
                 override fun onSuccess(responseInfo: Void?) {
                    notify("User metadata set successfully")
                 }
@@ -29,10 +38,19 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
 
     fun updateUserMetadata(uid: Int, key: String, value: String) {
         // Create a metadata instance
-        val metadata: Metadata = signalingEngine!!.storage!!.createMetadata()
+        val metadata: Metadata = Metadata()
 
         // Add a metadata item
-        metadata.setMetadataItem(MetadataItem(key, value, -1))
+        val items = ArrayList<MetadataItem>()
+        items.add(MetadataItem(key, value, -1))
+        metadata.items = items
+
+        // Record who and when set the metadata
+        val options = MetadataOptions()
+        options.recordTs = true
+        options.recordUserId = true
+
+        metadata.majorRevision = -1
 
         signalingEngine?.storage?.updateUserMetadata(uid.toString(), metadata,
             MetadataOptions(true, true), object: ResultCallback<Void?> {
@@ -49,7 +67,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
     fun getUserMetadata(uid: Int) {
         signalingEngine?.storage?.getUserMetadata(uid.toString(), object: ResultCallback<Metadata?> {
             override fun onSuccess(data: Metadata?) {
-                val items = data?.metadataItems
+                val items = data?.items
                 var summary = "User metadata\n"
                 if (items != null) {
                     for (item in items) {
@@ -67,14 +85,21 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
 
     fun setChannelMetadata(key: String, value: String, revision: Long, lockName: String) {
         // Create a metadata instance
-        val metadata: Metadata = signalingEngine!!.storage!!.createMetadata()
+        val metadata: Metadata = Metadata()
 
         // Add a metadata item
-        metadata.setMetadataItem(MetadataItem(key, value, revision))
+        val items = ArrayList<MetadataItem>()
+        items.add(MetadataItem(key, value, revision))
+        metadata.items = items
         metadata.majorRevision = -1
 
+        // Record who and when set the metadata
+        val options = MetadataOptions()
+        options.recordTs = true
+        options.recordUserId = true
+
         signalingEngine?.storage?.setChannelMetadata(channelName, channelType, metadata,
-            MetadataOptions(true, true), lockName, object: ResultCallback<Void?> {
+            options, lockName, object: ResultCallback<Void?> {
                 override fun onSuccess(responseInfo: Void?) {
                     notify("Channel metadata set successfully")
                 }
@@ -89,7 +114,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         signalingEngine?.storage?.getChannelMetadata(channelName, channelType, object: ResultCallback<Metadata?> {
             override fun onSuccess(data: Metadata?) {
                 var summary = "Channel metadata\n"
-                val items = data?.metadataItems
+                val items = data?.items
                 if (items != null) {
                     for (item in items) {
                         summary += "${item.key}: ${item.value}\n"
@@ -147,7 +172,7 @@ open class StorageManager(context: Context?) : AuthenticationManager(context!!) 
         })
     }
 
-    fun releaseLock(lockName: String, retry: Boolean) {
+    fun releaseLock(lockName: String) {
         signalingEngine?.lock?.releaseLock(channelName, channelType, lockName, object: ResultCallback<Void?> {
             override fun onSuccess(responseInfo: Void?) {
                 notify("Lock released successfully")
