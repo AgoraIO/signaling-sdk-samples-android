@@ -90,7 +90,7 @@ open class SignalingManager(context: Context) {
             }
         }
 
-        /*
+        /* Deprecated, use onLinkStateEvent instead
         override fun onConnectionStateChanged(
             channelName: String?,
             state: RtmConstants.RtmConnectionState?,
